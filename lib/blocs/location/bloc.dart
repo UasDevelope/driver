@@ -1,10 +1,12 @@
 import 'dart:developer';
 
+import 'package:driver/blocs/location/state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:training_request/blocs/location/event.dart';
-import 'package:training_request/blocs/location/state.dart';
+
+import 'event.dart';
+
 
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
   LocationBloc() : super(LocationInitialState()) {

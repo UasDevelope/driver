@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:training_request/blocs/authentication/auth_event.dart';
-import 'package:training_request/blocs/authentication/auth_state.dart';
+
+import 'auth_event.dart';
+import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvents, AuthState> {
   AuthBloc() : super(AuthInitialState()) {

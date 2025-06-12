@@ -1,10 +1,10 @@
+import 'package:driver/screens/home/home.dart';
 import 'package:flutter/material.dart';
-import 'package:training_request/screens/auth/signUp.dart';
-import 'package:training_request/screens/location/location.dart';
 
 import '../screens/auth/loginSucess.dart';
 import '../screens/auth/login_screen.dart';
-import '../screens/bottom/bottom.dart';
+import '../screens/auth/signUp.dart';
+import '../screens/location/location.dart';
 import '../screens/splash/splash.dart';
 
 class AppRoutes {
@@ -14,7 +14,6 @@ class AppRoutes {
   static const String signup = "/signup";
   static const String location="/location";
   static const String home = '/home';
-  static const String nav="/nav";
   static Route<dynamic> onGenerateRoute(RouteSettings setting) {
     switch (setting.name) {
       case splash:
@@ -27,8 +26,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => SignupScreen());
       case location:
         return MaterialPageRoute(builder: (_)=>LocationScreen());
-      case nav:
-        return MaterialPageRoute(builder: (_)=>BottomNav());
+      case home:
+        return MaterialPageRoute(builder: (_)=> HomeScreen());
       default:
         return MaterialPageRoute(
           builder:

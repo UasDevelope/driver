@@ -16,6 +16,13 @@
 	<string>driver</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to your location to provide location-based features.</string>
+
+    <!-- OR, if you need background location access -->
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app needs access to your location even when the app is in the background.</string>
+
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>

@@ -1,6 +1,6 @@
+import 'package:driver/blocs/splash/splash_event.dart';
+import 'package:driver/blocs/splash/splash_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:training_request/blocs/splash/splash_event.dart';
-import 'package:training_request/blocs/splash/splash_state.dart';
 
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
   SplashBloc() : super(const SplashInitialState()) {

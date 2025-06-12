@@ -14,6 +14,10 @@ class AppImages {
   static get calendar => "calendar".png;
   static get chat => "chat".png;
   static get setting => "setting".png;
+  static get clock=>"clock".png;
+  static get earning => "earning".png;
+  static get notification => "notification".png;
+  static get help => "help".png;
 }
 
 extension ImagePathExtension on String {

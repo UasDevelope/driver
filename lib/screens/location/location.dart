@@ -60,7 +60,7 @@ class LocationScreen extends StatelessWidget {
                     text: AppStrings.enableButton,
                     onPressed: () {
                       context.read<LocationBloc>().add(RequestEnableLocation());
-                      Navigator.pushNamed(context, AppRoutes.nav);
+                      Navigator.pushNamed(context, AppRoutes.home);
                     },
                   ),
                 ],
