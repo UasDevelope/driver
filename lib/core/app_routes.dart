@@ -1,4 +1,9 @@
+import 'package:driver/screens/earning/earning.dart';
+import 'package:driver/screens/help/help.dart';
 import 'package:driver/screens/home/home.dart';
+import 'package:driver/screens/message/messag.dart';
+import 'package:driver/screens/recentorder/order.dart';
+import 'package:driver/screens/setting/setting.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/auth/loginSucess.dart';
@@ -12,8 +17,14 @@ class AppRoutes {
   static const String login = '/login';
   static const String loginSucess = "/loginSuccess";
   static const String signup = "/signup";
-  static const String location="/location";
+  static const String location = "/location";
   static const String home = '/home';
+  static const String earning = '/earning';
+  static const String order = "/order";
+  static const notification = "/notification";
+  static const message = '/message';
+  static const settings = "/setting";
+  static const help = '/help';
   static Route<dynamic> onGenerateRoute(RouteSettings setting) {
     switch (setting.name) {
       case splash:
@@ -25,9 +36,19 @@ class AppRoutes {
       case signup:
         return MaterialPageRoute(builder: (_) => SignupScreen());
       case location:
-        return MaterialPageRoute(builder: (_)=>LocationScreen());
+        return MaterialPageRoute(builder: (_) => LocationScreen());
       case home:
-        return MaterialPageRoute(builder: (_)=> HomeScreen());
+        return MaterialPageRoute(builder: (_) => HomeScreen());
+      case order:
+        return MaterialPageRoute(builder: (_) => OrderScreen());
+      case earning:
+        return MaterialPageRoute(builder: (_) => EarningScreen());
+      case notification:
+        return MaterialPageRoute(builder: (_) => UserChatScreen());
+      case settings:
+        return MaterialPageRoute(builder: (_) => SettingScreen());
+      case help:
+        return MaterialPageRoute(builder: (_) => HelpScreen());
       default:
         return MaterialPageRoute(
           builder:

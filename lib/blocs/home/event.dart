@@ -1,7 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+
 @immutable
-abstract class HomeEvnt extends Equatable{
- const HomeEvnt();
- List<Object> get props=>[];
+abstract class HomeEvent extends Equatable {
+  const HomeEvent();
+  List<Object> get props => [];
+}
+
+class HomeLoadedEvent extends HomeEvent {
+  const HomeLoadedEvent();
+  List<Object> get props => [];
 }

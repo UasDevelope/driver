@@ -2,6 +2,7 @@ import 'package:driver/utils/const/app_img.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -21,7 +22,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(child: Center(child: Text("Drawer content"))),
+      drawer: CustomDrawer(
+        userName: "Joseph",
+        profileImage: AppImages.person, // Replace with actual image path
+      ),
       body: Stack(
         children: [
           // Google Map
@@ -45,11 +49,12 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Builder(
-                  builder: (context) => IconButton(
-                    icon: Icon(Icons.menu),
-                    onPressed: () => Scaffold.of(context).openDrawer(),
-                    color: Colors.black,
-                  ),
+                  builder:
+                      (context) => IconButton(
+                        icon: Icon(Icons.menu),
+                        onPressed: () => Scaffold.of(context).openDrawer(),
+                        color: Colors.black,
+                      ),
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -57,7 +62,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  child: Text("\$0", style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: Text(
+                    "\$0",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
                 Row(
                   children: [
@@ -65,10 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: Icon(Icons.notifications_none),
                       onPressed: () {},
                     ),
-                    IconButton(
-                      icon: Icon(Icons.my_location),
-                      onPressed: () {},
-                    ),
+                    IconButton(icon: Icon(Icons.my_location), onPressed: () {}),
                   ],
                 ),
               ],
@@ -94,12 +99,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("\$18.06", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      Text(
+                        "\$18.06",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       Row(
                         children: [
                           Icon(Icons.star, color: Colors.amber, size: 20),
                           SizedBox(width: 4),
-                          Text("5.0", style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text(
+                            "5.0",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ],
                       ),
                     ],
@@ -114,24 +128,40 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Icon(Icons.location_on, color: Colors.green),
                           SizedBox(width: 8),
-                          Expanded(child: Text("1124 Cave Road", style: TextStyle(fontWeight: FontWeight.bold))),
+                          Expanded(
+                            child: Text(
+                              "1124 Cave Road",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
                         ],
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 28.0),
-                        child: Text("Gillette, WV, 26582 United States", style: TextStyle(color: Colors.grey)),
+                        child: Text(
+                          "Gillette, WV, 26582 United States",
+                          style: TextStyle(color: Colors.grey),
+                        ),
                       ),
                       SizedBox(height: 8),
                       Row(
                         children: [
                           Icon(Icons.location_on, color: Colors.red),
                           SizedBox(width: 8),
-                          Expanded(child: Text("8 County Road 11/6", style: TextStyle(fontWeight: FontWeight.bold))),
+                          Expanded(
+                            child: Text(
+                              "8 County Road 11/6",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
                         ],
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 28.0),
-                        child: Text("Mannington, WV, 26582 United States", style: TextStyle(color: Colors.grey)),
+                        child: Text(
+                          "Mannington, WV, 26582 United States",
+                          style: TextStyle(color: Colors.grey),
+                        ),
                       ),
                     ],
                   ),
@@ -141,18 +171,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     children: [
                       CircleAvatar(
-                        backgroundImage: AssetImage(AppImages.profile), // Replace with your asset
+                        backgroundImage: AssetImage(
+                          AppImages.profile,
+                        ), // Replace with your asset
                       ),
                       SizedBox(width: 12),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Frank Joseph", style: TextStyle(fontWeight: FontWeight.bold)),
-                          Text("ID: BK0234", style: TextStyle(color: Colors.grey)),
+                          Text(
+                            "Frank Joseph",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "ID: BK0234",
+                            style: TextStyle(color: Colors.grey),
+                          ),
                         ],
                       ),
                       Spacer(),
-                      Text("No of Hours: 2 hours", style: TextStyle(fontWeight: FontWeight.w500)),
+                      Text(
+                        "No of Hours: 2 hours",
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
                     ],
                   ),
                   SizedBox(height: 20),
@@ -167,7 +208,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       minimumSize: Size(double.infinity, 50),
                     ),
                     onPressed: () {},
-                    child: Text("Accept", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      "Accept",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),

@@ -7,4 +7,5 @@ class AppColor {
   static get light_grey => Color(0xff7F909F);
   static get grey => Color(0xffA2A2A2);
   static get black => Color(0xff000000);
+  static get red =>Color(0xffFE0F00);
 }
