@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import '../screens/auth/loginSucess.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/signUp.dart';
+import '../screens/chat/chat.dart';
+import '../screens/chat/inbox.dart';
 import '../screens/location/location.dart';
 import '../screens/splash/splash.dart';
 
@@ -23,6 +25,8 @@ class AppRoutes {
   static const String order = "/order";
   static const notification = "/notification";
   static const message = '/message';
+  static const String chatInbox = "/inbox";
+
   static const settings = "/setting";
   static const help = '/help';
   static Route<dynamic> onGenerateRoute(RouteSettings setting) {
@@ -49,6 +53,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => SettingScreen());
       case help:
         return MaterialPageRoute(builder: (_) => HelpScreen());
+      case chatInbox:
+        return MaterialPageRoute(builder: (_) => ChatInbox());
+      case message:
+        return MaterialPageRoute(builder: (_) => ChatUsers());
       default:
         return MaterialPageRoute(
           builder:

@@ -5,6 +5,10 @@ class AppImages {
   static get password => "password".png;
   static get loginSucess => "loginSucess".png;
   static get person => "person".png;
+  static get person1=> "person1".png;
+  static get  edit => "edit".png;
+  static get send => "send".png;
+
   static get driving => "driving".png;
   static get profile => "profile".png;
   static get drive => "drive".png;
