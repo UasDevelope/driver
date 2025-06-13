@@ -4,7 +4,9 @@ import 'package:driver/blocs/home/event.dart';
 import 'package:driver/blocs/home/state.dart';
 import 'package:driver/models/home.dart';
 import 'package:driver/screens/home/tripCard.dart';
+import 'package:driver/utils/const/app_color.dart';
 import 'package:driver/utils/const/app_img.dart';
+import 'package:driver/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -112,12 +114,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 //  Bottom Sheet
                 Positioned(
-                  bottom: 0,
+                  bottom: 90,
                   left: 10,
                   right: 10,
                   child: CarouselSlider(
                     options: CarouselOptions(
-                      height: 270, // Adjust based on card size
+                      height: 350, // Adjust based on card size
                       autoPlay: true,
                       autoPlayInterval: Duration(seconds: 3),
                       enlargeCenterPage: true,
@@ -134,6 +136,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                           );
                         }).toList(),
+                  ),
+                ),
+
+                Positioned(
+                  bottom: 30,
+                  left: 60,
+                  right: 60,
+                  child: AppButton(
+                    backgroundColor: AppColor.appColor,
+                    width: 200,
+                    text: "Accept job",
+                    onPressed: () {},
                   ),
                 ),
               ],
