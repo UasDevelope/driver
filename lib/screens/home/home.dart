@@ -1,5 +1,12 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:driver/blocs/home/bloc.dart';
+import 'package:driver/blocs/home/event.dart';
+import 'package:driver/blocs/home/state.dart';
+import 'package:driver/models/home.dart';
+import 'package:driver/screens/home/tripCard.dart';
 import 'package:driver/utils/const/app_img.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'drawer.dart';
@@ -26,201 +33,114 @@ class _HomeScreenState extends State<HomeScreen> {
         userName: "Joseph",
         profileImage: AppImages.person, // Replace with actual image path
       ),
-      body: Stack(
-        children: [
-          // Google Map
-          Positioned.fill(
-            child: GoogleMap(
-              initialCameraPosition: _initialPosition,
-              zoomControlsEnabled: false,
-              myLocationEnabled: true,
-              onMapCreated: (controller) {
-                _mapController = controller;
-              },
-            ),
-          ),
-
-          // Top Bar
-          Positioned(
-            top: 50,
-            left: 16,
-            right: 16,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          if (state is HomeLoadingState) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (state is HomeLoadedState) {
+            return Stack(
               children: [
-                Builder(
-                  builder:
-                      (context) => IconButton(
-                        icon: Icon(Icons.menu),
-                        onPressed: () => Scaffold.of(context).openDrawer(),
-                        color: Colors.black,
-                      ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Text(
-                    "\$0",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                // Google Map
+                Positioned.fill(
+                  child: GoogleMap(
+                    polylines: state.polyLines,
+                    initialCameraPosition: _initialPosition,
+                    zoomControlsEnabled: true,
+                    myLocationEnabled: true,
+                    markers: state.marker,
+                    onMapCreated: (controller) {
+                      _mapController = controller;
+                    },
                   ),
                 ),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.notifications_none),
-                      onPressed: () {},
-                    ),
-                    IconButton(icon: Icon(Icons.my_location), onPressed: () {}),
-                  ],
-                ),
-              ],
-            ),
-          ),
 
-          // Bottom Sheet
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Price and Rating Row
-                  Row(
+                // Top Bar
+                Positioned(
+                  top: 50,
+                  left: 16,
+                  right: 16,
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "\$18.06",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Icon(Icons.star, color: Colors.amber, size: 20),
-                          SizedBox(width: 4),
-                          Text(
-                            "5.0",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-
-                  // Route Info
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.location_on, color: Colors.green),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              "1124 Cave Road",
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                      Builder(
+                        builder:
+                            (context) => Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: IconButton(
+                                icon: Icon(Icons.menu),
+                                onPressed:
+                                    () => Scaffold.of(context).openDrawer(),
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
-                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 28.0),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                         child: Text(
-                          "Gillette, WV, 26582 United States",
-                          style: TextStyle(color: Colors.grey),
+                          "\$0",
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
-                      SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Icon(Icons.location_on, color: Colors.red),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              "8 County Road 11/6",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 28.0),
-                        child: Text(
-                          "Mannington, WV, 26582 United States",
-                          style: TextStyle(color: Colors.grey),
+                      Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.notifications_none),
+                          onPressed: () {},
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                ),
 
-                  // User Info
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: AssetImage(
-                          AppImages.profile,
-                        ), // Replace with your asset
-                      ),
-                      SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Frank Joseph",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "ID: BK0234",
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                      Text(
-                        "No of Hours: 2 hours",
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-
-                  // Accept Button
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.lightGreen,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      minimumSize: Size(double.infinity, 50),
+                //  Bottom Sheet
+                Positioned(
+                  bottom: 0,
+                  left: 10,
+                  right: 10,
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                      height: 270, // Adjust based on card size
+                      autoPlay: true,
+                      autoPlayInterval: Duration(seconds: 3),
+                      enlargeCenterPage: true,
+                      viewportFraction: 1,
+                      scrollDirection: Axis.horizontal,
                     ),
-                    onPressed: () {},
-                    child: Text(
-                      "Accept",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    items:
+                        state.homeModel.map((data) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return TripCard(
+                                data: data,
+                              ); // Your custom trip card widget
+                            },
+                          );
+                        }).toList(),
                   ),
-                ],
-              ),
-            ),
-          ),
-        ],
+                ),
+              ],
+            );
+          }
+          return SizedBox();
+        },
       ),
     );
   }

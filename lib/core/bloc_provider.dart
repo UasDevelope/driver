@@ -1,3 +1,5 @@
+import 'package:driver/blocs/home/bloc.dart';
+import 'package:driver/blocs/home/event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/authentication/auth_bloc.dart';
@@ -15,5 +17,6 @@ List<BlocProvider> getAppBlocProvider() {
     BlocProvider<LocationBloc>(
       create: (_) => LocationBloc()..add(RequestEnableLocation()),
     ),
+    BlocProvider<HomeBloc>(create: (_) => HomeBloc()..add(HomeLoadedEvent())),
   ];
 }

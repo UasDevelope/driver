@@ -11,3 +11,8 @@ class HomeLoadedEvent extends HomeEvent {
   const HomeLoadedEvent();
   List<Object> get props => [];
 }
+class HomeAcceptJobEvent extends HomeEvent{
+  final String bookingId;
+  const HomeAcceptJobEvent(this.bookingId);
+  List<Object> get props=>[bookingId];
+}
