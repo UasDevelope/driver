@@ -49,7 +49,7 @@ SPEC CHECKSUMS:
   geocoding_ios: d7460f56e80e118d57678efe5c2cdc888739ff18
   geolocator_apple: 66b711889fd333205763b83c9dcf0a57a28c7afd
   Google-Maps-iOS-Utils: 66d6de12be1ce6d3742a54661e7a79cb317a9321
-  google_maps_flutter_ios: e1f531f1f0cef41d3accbd1107af552a53eb2dff
+  google_maps_flutter_ios: e31555a04d1986ab130f2b9f24b6cdc861acc6d3
   GoogleMaps: 8939898920281c649150e0af74aa291c60f2e77d
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
 

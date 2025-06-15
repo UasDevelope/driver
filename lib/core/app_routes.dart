@@ -46,7 +46,7 @@ class AppRoutes {
       case order:
         return MaterialPageRoute(builder: (_) => OrderScreen());
       case earning:
-        return MaterialPageRoute(builder: (_) => EarningScreen());
+        return MaterialPageRoute(builder: (_) => EarningsScreen());
       case notification:
         return MaterialPageRoute(builder: (_) => UserChatScreen());
       case settings:
