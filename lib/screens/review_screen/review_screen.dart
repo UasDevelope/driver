@@ -1,3 +1,5 @@
+import 'package:driver/screens/home/drawer.dart';
+import 'package:driver/utils/const/app_img.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -31,6 +33,10 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: CustomDrawer(
+        userName: "userName",
+        profileImage: AppImages.profile,
+      ),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -38,6 +44,22 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Builder(
+                builder:
+                    (context) => Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.menu),
+                        onPressed: () => Scaffold.of(context).openDrawer(),
+                        color: Colors.black,
+                      ),
+                    ),
+              ),
               const SizedBox(height: 20),
               const Center(
                 child: CircleAvatar(
@@ -71,7 +93,10 @@ class ProfileScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Text("Review", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                    "Review",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                   Text("See all", style: TextStyle(color: Colors.green)),
                 ],
               ),
@@ -98,10 +123,18 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 30),
-              const Text("Achievements", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const Text(
+                "Achievements",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
               const SizedBox(height: 10),
               Container(
-                padding: const EdgeInsets.only(left: 20,right: 20,top: 30,bottom: 30),
+                padding: const EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  top: 30,
+                  bottom: 30,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.lightBlue.shade50,
                   borderRadius: BorderRadius.circular(16),
@@ -121,7 +154,12 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  static Widget _overviewCard(IconData icon, String value, String label, bool check) {
+  static Widget _overviewCard(
+    IconData icon,
+    String value,
+    String label,
+    bool check,
+  ) {
     return Container(
       width: 100,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
@@ -134,16 +172,19 @@ class ProfileScreen extends StatelessWidget {
         children: [
           check
               ? Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: const Color(0xff7FBD42).withOpacity(0.4),
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: Icon(icon, color: const Color(0xff7FBD42), size: 20),
-          )
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: const Color(0xff7FBD42).withOpacity(0.4),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Icon(icon, color: const Color(0xff7FBD42), size: 20),
+              )
               : Icon(icon, color: const Color(0xff7FBD42), size: 20),
           const SizedBox(height: 5),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(
+            value,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
           Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
         ],
       ),
@@ -194,7 +235,10 @@ class ReviewCard extends StatelessWidget {
               CircleAvatar(
                 radius: 12,
                 backgroundColor: color,
-                child: Text(initial, style: const TextStyle(color: Colors.white, fontSize: 12)),
+                child: Text(
+                  initial,
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                ),
               ),
               const SizedBox(width: 8),
               Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -207,22 +251,22 @@ class ReviewCard extends StatelessWidget {
             children: [
               ...List.generate(
                 5,
-                    (index) => const Icon(Icons.star, size: 14, color: Colors.amber),
+                (index) =>
+                    const Icon(Icons.star, size: 14, color: Colors.amber),
               ),
               const SizedBox(width: 6),
-              Text(daysAgo, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+              Text(
+                daysAgo,
+                style: const TextStyle(fontSize: 10, color: Colors.grey),
+              ),
             ],
           ),
           const SizedBox(height: 8),
 
           // Review Text
-          Text(
-            review,
-            style: const TextStyle(fontSize: 14),
-          ),
+          Text(review, style: const TextStyle(fontSize: 14)),
         ],
       ),
     );
   }
 }
-

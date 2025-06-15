@@ -24,6 +24,7 @@ class AppImages {
   static get help => "help".png;
   static get start => "start".png;
   static get end => "end".png;
+  static get mylocation => "mylocation".png;
 }
 
 extension ImagePathExtension on String {

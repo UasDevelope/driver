@@ -128,7 +128,7 @@ Widget Body() {
                 borderRadius: 10,
                 text: AppStrings.login,
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.loginSucess);
+                  Navigator.pushNamed(context, AppRoutes.location);
                 },
               ),
 

@@ -1,16 +1,19 @@
+import 'package:driver/utils/const/app_img.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
 import '../../widgets/graph_widget.dart';
+import '../home/drawer.dart';
 
 class EarningsScreen extends StatelessWidget {
   const EarningsScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xfffdfdfe),
-      drawer: Drawer(),
+      drawer: CustomDrawer(
+        userName: 'Hello user',
+        profileImage: AppImages.profile,
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -19,28 +22,43 @@ class EarningsScreen extends StatelessWidget {
                 Container(
                   height: 180,
                   width: 400,
-                  decoration: BoxDecoration(color: Color(0xff7FBD42),
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40),bottomRight: Radius.circular(40))
+                  decoration: BoxDecoration(
+                    color: Color(0xff7FBD42),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(40),
+                      bottomRight: Radius.circular(40),
+                    ),
                   ),
                 ),
                 Column(
                   children: [
-                    SizedBox(height: 40),
+                    SizedBox(height: 80),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          height: 45,
-                          width: 45,
-                          margin: EdgeInsets.only(left: 20),
-                          decoration: BoxDecoration(
-                            color: Color(0xff99ca68),
-                            borderRadius: BorderRadius.circular(15),
+                        const SizedBox(width: 20),
+
+                        // Menu Button
+                        Builder(
+                          builder: (context) => Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.menu),
+                              onPressed: () => Scaffold.of(context).openDrawer(),
+                              color: Colors.black,
+                            ),
                           ),
-                          child: Icon(Icons.menu, color: Colors.white),
                         ),
-                        Text(
+
+                        const Spacer(),
+
+                        // Title
+                        const Text(
                           "Earnings",
                           style: TextStyle(
                             color: Colors.white,
@@ -48,21 +66,26 @@ class EarningsScreen extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
+
+                        const Spacer(),
+
+                        // Notification Icon
                         Container(
                           height: 45,
                           width: 45,
-                          margin: EdgeInsets.only(right: 20),
+                          margin: const EdgeInsets.only(right: 20),
                           decoration: BoxDecoration(
-                            color: Color(0xff99ca68),
+                            color: const Color(0xff99ca68),
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.notifications_none,
                             color: Colors.white,
                           ),
                         ),
                       ],
                     ),
+
                     SizedBox(height: 15),
                     const Text(
                       "Jun 19 - Jun 25",
@@ -81,11 +104,11 @@ class EarningsScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: const [
-                        SizedBox(width: 20,),
+                        SizedBox(width: 20),
                         InfoCard(title: "Orders", value: "123"),
-                        SizedBox(width: 20,),
+                        SizedBox(width: 20),
                         InfoCard(title: "Online", value: "23h 39m"),
-                        SizedBox(width: 20,),
+                        SizedBox(width: 20),
                       ],
                     ),
                     EarningsGraph(),
@@ -99,7 +122,10 @@ class EarningsScreen extends StatelessWidget {
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           Spacer(),
-                          Text("See all", style: TextStyle(color: Colors.green)),
+                          Text(
+                            "See all",
+                            style: TextStyle(color: Colors.green),
+                          ),
                         ],
                       ),
                     ),
@@ -139,16 +165,22 @@ class InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: EdgeInsets.only(top: 10,bottom: 10,left: 10,right: 10),
+        padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
           color: Color(0xffF8F7FB),
-          borderRadius: BorderRadius.circular(5)
+          borderRadius: BorderRadius.circular(5),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 4),
-            Text(title, style:  TextStyle(color: Colors.black,fontWeight: FontWeight.w600)),
+            Text(
+              title,
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             Text(
               value,
               style: const TextStyle(
@@ -178,7 +210,10 @@ class OrderItem extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
             color: Color(0xff7FBD42).withOpacity(0.4),
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
           ),
           child: Padding(
             padding: const EdgeInsets.all(12),
@@ -191,37 +226,40 @@ class OrderItem extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 10,),
+        SizedBox(height: 10),
         ListView.separated(
-            shrinkWrap: true,
-            padding: EdgeInsets.all(0),
-            itemBuilder: (BuildContext context,index){
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4,horizontal: 16),
-                child: Row(
-                  children: [
-                    const Icon(Icons.receipt_long_outlined, size: 18),
-                    const SizedBox(width: 8),
-                    Text("Order ${orderList[index].orderId}"),
-                    const Spacer(),
-                    Text(
-                      orderList[index].price,
-                      style: const TextStyle(
-                        color: Color(0xff223A82),
-                        fontWeight: FontWeight.bold,
-                      ),
+          shrinkWrap: true,
+          padding: EdgeInsets.all(0),
+          itemBuilder: (BuildContext context, index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+              child: Row(
+                children: [
+                  const Icon(Icons.receipt_long_outlined, size: 18),
+                  const SizedBox(width: 8),
+                  Text("Order ${orderList[index].orderId}"),
+                  const Spacer(),
+                  Text(
+                    orderList[index].price,
+                    style: const TextStyle(
+                      color: Color(0xff223A82),
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
-              );
-            }, separatorBuilder: (BuildContext context,index){
-          return Container(
-            height: 1,
-            width: 300,
-            margin: EdgeInsets.only(top: 10,bottom: 10),
-            color: Color(0xffF7F9FC),
-          );
-        }, itemCount: orderList.length)
+                  ),
+                ],
+              ),
+            );
+          },
+          separatorBuilder: (BuildContext context, index) {
+            return Container(
+              height: 1,
+              width: 300,
+              margin: EdgeInsets.only(top: 10, bottom: 10),
+              color: Color(0xffF7F9FC),
+            );
+          },
+          itemCount: orderList.length,
+        ),
       ],
     );
   }

@@ -59,9 +59,9 @@ class CustomDrawer extends StatelessWidget {
           _buildDrawerItem(AppImages.earning, "Earnings", () {
             Navigator.pushNamed(context, AppRoutes.earning);
           }),
-          _buildDrawerItem(AppImages.notification, "Notifications", () {
-            Navigator.pushNamed(context, AppRoutes.notification);
-          }),
+          // _buildDrawerItem(AppImages.notification, "Notifications", () {
+          //   Navigator.pushNamed(context, AppRoutes.notification);
+          // }),
           _buildDrawerItem(AppImages.chat, "Messages", () {
             Navigator.pushNamed(context, AppRoutes.message);
           }),
