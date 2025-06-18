@@ -55,7 +55,7 @@ class Loginsucess extends StatelessWidget {
               backgroundColor: AppColor.appColor,
               text: AppStrings.letsExplore,
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>EarningsScreen()));
                // Navigator.pushNamed(context, AppRoutes.location);
               },
             ),
