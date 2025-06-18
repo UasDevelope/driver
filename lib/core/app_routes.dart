@@ -12,7 +12,10 @@ import '../screens/auth/signUp.dart';
 import '../screens/chat/chat.dart';
 import '../screens/chat/inbox.dart';
 import '../screens/location/location.dart';
+import '../screens/order/order.dart';
+import '../screens/review_screen/review_screen.dart';
 import '../screens/splash/splash.dart';
+import '../screens/tabar/tabar.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -44,13 +47,13 @@ class AppRoutes {
       case home:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case order:
-        return MaterialPageRoute(builder: (_) => OrderScreen());
+        return MaterialPageRoute(builder: (_) => TabarScreen());
       case earning:
-        return MaterialPageRoute(builder: (_) => EarningScreen());
+        return MaterialPageRoute(builder: (_) => EarningsScreen());
       case notification:
         return MaterialPageRoute(builder: (_) => UserChatScreen());
       case settings:
-        return MaterialPageRoute(builder: (_) => SettingScreen());
+        return MaterialPageRoute(builder: (_) => ReviewScreen());
       case help:
         return MaterialPageRoute(builder: (_) => HelpScreen());
       case chatInbox:

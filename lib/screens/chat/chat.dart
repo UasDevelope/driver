@@ -1,3 +1,4 @@
+import 'package:driver/screens/home/drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +17,7 @@ class ChatUsers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer:CustomDrawer(userName: "userName", profileImage:AppImages.profile),
       backgroundColor: Colors.white,
       body: SafeArea(child: _body(context)),
     );
@@ -37,6 +39,26 @@ class ChatUsers extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 24),
+                  Align(
+                    alignment:Alignment.topLeft,
+                    child: Builder(
+                      builder:
+                          (context) => Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.menu),
+                          onPressed:
+                              () => Scaffold.of(context).openDrawer(),
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
                   Center(child: Image.asset(AppImages.logo, height: 40)),
                   const SizedBox(height: 24),
                   Row(

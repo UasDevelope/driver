@@ -1,5 +1,7 @@
 import 'package:driver/blocs/home/bloc.dart';
 import 'package:driver/blocs/home/event.dart';
+import 'package:driver/blocs/order/bloc.dart';
+import 'package:driver/blocs/order/event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/authentication/auth_bloc.dart';
@@ -27,6 +29,9 @@ List<BlocProvider> getAppBlocProvider() {
     ),
     BlocProvider<ChatInboxBloc>(
       create: (_) => ChatInboxBloc()..add(ChatLoadedEvent()),
+    ),
+    BlocProvider<OrderBloc>(
+      create: (_) => OrderBloc()..add(OrderLoadedEvent()),
     ),
   ];
 }

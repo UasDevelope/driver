@@ -24,6 +24,14 @@ class AppImages {
   static get help => "help".png;
   static get start => "start".png;
   static get end => "end".png;
+  static get mylocation => "mylocation".png;
+  static get menuicon => "menuicon".png;
+  static get notificationimg => "notificationicon".png;
+  static get orderlisticon => "orderlisticon".png;
+  static get cancellationimg => "cancellationimg".png;
+  static get reviewimg => "reviewimg".png;
+  static get satisfactionimg => "satisfactionimg".png;
+  static get userimg => "userimg".png;
 }
 
 extension ImagePathExtension on String {

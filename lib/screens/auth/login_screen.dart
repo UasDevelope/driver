@@ -1,3 +1,4 @@
+import 'package:driver/screens/order_detail/order_detail_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,7 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/form_field.dart';
 
 import '../../blocs/authentication/auth_event.dart';
+import '../review_screen/review_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -128,7 +130,9 @@ Widget Body() {
                 borderRadius: 10,
                 text: AppStrings.login,
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.loginSucess);
+                  //Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderDetailsScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ReviewScreen()));
+                 // Navigator.pushNamed(context, AppRoutes.location);
                 },
               ),
 
