@@ -78,4 +78,21 @@ class AppStrings {
   static const String navChat = "Chat";
   static const String navSetting = "Setting";
 
+  static const String orderPrefix = "Orders";
+  static const String earnings = "Earnings";
+  static const String onlinePrefix = "Online";
+  static const String recentOrders = "Recent orders";
+  static const String seeAll = "See all";
+  static const String exampleDateRange = "Jun 19 - Jun 25";
+  static const String exampleDate = "Saturday\n17/06/2023";
+
+  static const String profile = "Profile";
+  static const String overview = "Overview";
+  static const String ratings = "Ratings";
+  static const String satisfaction = "Satisfaction";
+  static const String cancellationRate = "Cancellation Rate";
+  static const String reviews = "Reviews";
+  static const String achievements = "Achievements";
+  static const String friendlyTrainer = "Friendly Trainer";
+
 }

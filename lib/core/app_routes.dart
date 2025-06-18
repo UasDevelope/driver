@@ -11,7 +11,6 @@ import '../screens/auth/login_screen.dart';
 import '../screens/auth/signUp.dart';
 import '../screens/chat/chat.dart';
 import '../screens/chat/inbox.dart';
-import '../screens/graph/graph.dart';
 import '../screens/location/location.dart';
 import '../screens/order/order.dart';
 import '../screens/review_screen/review_screen.dart';
@@ -54,7 +53,7 @@ class AppRoutes {
       case notification:
         return MaterialPageRoute(builder: (_) => UserChatScreen());
       case settings:
-        return MaterialPageRoute(builder: (_) => ProfileScreen());
+        return MaterialPageRoute(builder: (_) => ReviewScreen());
       case help:
         return MaterialPageRoute(builder: (_) => HelpScreen());
       case chatInbox:

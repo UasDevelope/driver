@@ -7,7 +7,7 @@ import '../../utils/const/app_img.dart';
 import '../../utils/const/app_string.dart';
 import '../../widgets/app_text.dart';
 import '../../widgets/custom_button.dart';
-import '../graph/graph.dart';
+import '../order_detail/order_detail_screen.dart';
 import '../review_screen/review_screen.dart';
 
 
@@ -55,7 +55,7 @@ class Loginsucess extends StatelessWidget {
               backgroundColor: AppColor.appColor,
               text: AppStrings.letsExplore,
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderDetailsScreen()));
                // Navigator.pushNamed(context, AppRoutes.location);
               },
             ),
