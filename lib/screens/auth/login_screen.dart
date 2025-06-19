@@ -130,9 +130,9 @@ Widget Body() {
                 borderRadius: 10,
                 text: AppStrings.login,
                 onPressed: () {
-                  //Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderDetailsScreen()));
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ReviewScreen()));
-                 // Navigator.pushNamed(context, AppRoutes.location);
+                  // //Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderDetailsScreen()));
+                  // Navigator.push(context, MaterialPageRoute(builder: (context)=>ReviewScreen()));
+                 Navigator.pushNamed(context, AppRoutes.location);
                 },
               ),
 

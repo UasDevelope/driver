@@ -4,6 +4,7 @@ import 'package:driver/screens/home/home.dart';
 import 'package:driver/screens/message/messag.dart';
 import 'package:driver/screens/recentorder/order.dart';
 import 'package:driver/screens/setting/setting.dart';
+import 'package:driver/widgets/graph_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/auth/loginSucess.dart';
@@ -13,6 +14,7 @@ import '../screens/chat/chat.dart';
 import '../screens/chat/inbox.dart';
 import '../screens/location/location.dart';
 import '../screens/order/order.dart';
+import '../screens/order_detail/order_detail_screen.dart';
 import '../screens/review_screen/review_screen.dart';
 import '../screens/splash/splash.dart';
 import '../screens/tabar/tabar.dart';
@@ -49,7 +51,7 @@ class AppRoutes {
       case order:
         return MaterialPageRoute(builder: (_) => TabarScreen());
       case earning:
-        return MaterialPageRoute(builder: (_) => EarningsScreen());
+        return MaterialPageRoute(builder: (_) => OrderDetailsScreen());
       case notification:
         return MaterialPageRoute(builder: (_) => UserChatScreen());
       case settings:
