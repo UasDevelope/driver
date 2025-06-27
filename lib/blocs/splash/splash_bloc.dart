@@ -11,14 +11,17 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     Emitter<SplashState> emit,
   ) async {
     emit(SplashLoadingState());
-    try {} catch (e) {
-      await Future.delayed((Duration(seconds: 3)));
+    try {
+      await Future.delayed(Duration(seconds: 3));
       final bool hasToken = await _hasToken();
       if (hasToken) {
-        SplashNavigateToLogin();
+        emit(SplashNavigateToLogin());
       } else {
-        SplashNavigateToHome();
+        emit(SplashNavigateToHome());
       }
+    } catch (e) {
+      // Optionally handle error
+      emit(SplashNavigateToLogin());
     }
   }
 

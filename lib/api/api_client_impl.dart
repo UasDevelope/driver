@@ -22,7 +22,6 @@ class ApiClientImp implements BaseApiClient {
 
     final response = await _client.get(url, headers: _header(token ?? ""));
     log("⬅️ [RESPONSE ${response.statusCode}] ${response.body}");
-
     return _handleResponse(response);
   }
 

@@ -13,9 +13,10 @@ class RememberChecked extends AuthState {
   List<Object> get props => [isRememberMeChecked];
 }
 
-class TermsChecked extends AuthState {
+class TermsAndConditionChecked extends AuthState {
   final bool isTermsChecked;
-  const TermsChecked({required this.isTermsChecked});
+  const TermsAndConditionChecked({required this.isTermsChecked});
+  @override
   List<Object> get props => [isTermsChecked];
 }
 
@@ -31,9 +32,10 @@ class AuthLoadedState extends AuthState {
   const AuthLoadedState();
 }
 
-class AuthSucessState extends AuthState {
+class AuthSuccessState extends AuthState {
   final String message;
-  const AuthSucessState({required this.message});
+  const AuthSuccessState({required this.message});
+  List<Object> get props => [message];
 }
 
 class AuthErrorState extends AuthState {

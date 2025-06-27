@@ -1,34 +1,60 @@
 import 'package:driver/api/api_const.dart';
 import 'package:driver/api/base_api_client.dart';
-import 'package:get_it/get_it.dart';
+import 'package:driver/models/auth_model.dart';
+import '../api/service_locator.dart';
+import '../services/local.dart';
 
 class AuthRepository {
-  final BaseApiClient _apiClient = GetIt.instance<BaseApiClient>();
-  Future<Map<String,dynamic>> SignUpUser({
-    required String fullName,
-    required String contactNumber,
+  final BaseApiClient _apiClient = sl<BaseApiClient>();
+  Future<Map<String, dynamic>> SignUpUser({required AuthModel authModel}) async {
+    try {
+      final Map<String, dynamic> body = {
+        "fullName": authModel.fullName,
+        "email": authModel.email,
+        "contactNumber": authModel.contactNumber,
+        "password": authModel.password,
+        "role": authModel.role,
+        "drivingPermitNumber": authModel.drivingPermitNumber,
+        "certificateNumber": authModel.certificateNumber,
+      };
+      if (authModel.role != "serviceProvider") {
+        body.removeWhere((key, value) => value == null);
+      }
+
+      final response = await _apiClient.post(ApiConstants.register, body);
+      if (response.containsKey('token')) {
+        await LocalStorage.storeString(
+          LocalStorage.AcessToken,
+          response['token'],
+        );
+      }
+      return response;
+    } catch (e) {
+      return {
+        "success": false,
+        "message": "Something went wrong: $e",
+      };
+    }
+  }
+  Future<Map<String, dynamic>> LoginUser({
     required String email,
     required String password,
-    required String role,
-    String? drivingPermitNumber,
-    String? certificateNumber,
   }) async {
-    final Map<String, dynamic> body = {
-      "fullName": fullName,
-      "email": email,
-      "contactNumber": contactNumber,
-      "password": password,
-      "role": role,
-    };
-    if (role == "serviceProvider") {
-      if (drivingPermitNumber != null) {
-        body['drivingPermitNumber'] = drivingPermitNumber;
-      }
-      if (certificateNumber != null) {
-        body["certificateNumber"] = certificateNumber;
-      }
+    final Map<String, dynamic> body = {"email": email, "password": password};
+    final response = await _apiClient.post(
+      ApiConstants.login,
+      body,
+      auth: true,
+    );
+    if (response.containsKey('token')) {
+      await LocalStorage.storeString(
+        LocalStorage.AcessToken,
+        response['token'],
+      );
+      return response;
+    } else {
+      throw Exception('Login failed: token not found in response');
     }
-    var response = _apiClient.post(ApiConstants.register, body);
-    return response;
   }
+
 }
