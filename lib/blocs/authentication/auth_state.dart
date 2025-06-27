@@ -40,3 +40,7 @@ class AuthErrorState extends AuthState {
   final String message;
   const AuthErrorState({required this.message});
 }
+class SignupState extends AuthState{
+ const SignupState();
+
+}
