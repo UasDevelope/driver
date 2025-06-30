@@ -15,9 +15,13 @@ class AppTextFormField extends StatelessWidget {
   final bool isPhoneField;
   final void Function(String)? onCountryChanged;
   final Color hintColor;
+  final bool readOnly;
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
+  final VoidCallback? onTap;
+  final bool isNumeric;
   final Color preficColor;
+
   const AppTextFormField({
     Key? key,
     required this.controller,
@@ -27,20 +31,25 @@ class AppTextFormField extends StatelessWidget {
     this.onChanged,
     this.isPhoneField = false,
     this.onCountryChanged,
+    this.readOnly = false,
     this.preficColor = AppColor.blue,
     this.isPassword = false,
     this.borderColor = const Color(0xFFE0E0E0),
     this.backgroundColor = const Color(0xffF8F7FB),
     this.textColor = Colors.black,
     this.hintColor = const Color(0xFF9E9E9E),
+    this.onTap,
+    this.isNumeric = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onTap: onTap,
       controller: controller,
+      readOnly: readOnly,
       obscureText: isPassword,
-      keyboardType: isPhoneField ? TextInputType.phone : TextInputType.text,
+      keyboardType: isPhoneField ? TextInputType.phone :isNumeric?TextInputType.number: TextInputType.text,
       style: GoogleFonts.plusJakartaSans(
         fontSize: 18,
         color: textColor,

@@ -11,18 +11,10 @@ abstract class AuthEvents extends Equatable {
 
 class CheckboxToggled extends AuthEvents {
   final bool isChecked;
-  CheckboxToggled({required this.isChecked});
+  const CheckboxToggled({required this.isChecked});
   @override
   List<Object> get props => [isChecked];
 }
-
-class CheckTermsAndConditions extends AuthEvents {
-  final bool isTermChecked;
-  CheckTermsAndConditions({required this.isTermChecked});
-  @override
-  List<Object> get props => [isTermChecked];
-}
-
 class SignUpEvent extends AuthEvents {
   AuthModel authModel;
   SignUpEvent({required this.authModel});
@@ -30,6 +22,6 @@ class SignUpEvent extends AuthEvents {
 class LoginRequest extends AuthEvents {
   final String email;
   final String password;
-  LoginRequest({required this.email, required this.password});
+  const LoginRequest({required this.email, required this.password});
   List<Object> get props => [email, password];
 }

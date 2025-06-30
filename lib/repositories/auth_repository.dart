@@ -5,8 +5,11 @@ import '../api/service_locator.dart';
 import '../services/local.dart';
 
 class AuthRepository {
-  final BaseApiClient _apiClient = sl<BaseApiClient>();
-  Future<Map<String, dynamic>> SignUpUser({required AuthModel authModel}) async {
+  final BaseApiClient apiClient = sl<BaseApiClient>();
+
+  Future<Map<String, dynamic>> signUpUser({
+    required AuthModel authModel,
+  }) async {
     try {
       final Map<String, dynamic> body = {
         "fullName": authModel.fullName,
@@ -21,7 +24,7 @@ class AuthRepository {
         body.removeWhere((key, value) => value == null);
       }
 
-      final response = await _apiClient.post(ApiConstants.register, body);
+      final response = await apiClient.post(ApiConstants.register, body);
       if (response.containsKey('token')) {
         await LocalStorage.storeString(
           LocalStorage.AcessToken,
@@ -30,22 +33,16 @@ class AuthRepository {
       }
       return response;
     } catch (e) {
-      return {
-        "success": false,
-        "message": "Something went wrong: $e",
-      };
+      return {"success": false, "message": "Something went wrong: $e"};
     }
   }
-  Future<Map<String, dynamic>> LoginUser({
+
+  Future<Map<String, dynamic>> loginUser({
     required String email,
     required String password,
   }) async {
     final Map<String, dynamic> body = {"email": email, "password": password};
-    final response = await _apiClient.post(
-      ApiConstants.login,
-      body,
-      auth: true,
-    );
+    final response = await apiClient.post(ApiConstants.login, body, auth: true);
     if (response.containsKey('token')) {
       await LocalStorage.storeString(
         LocalStorage.AcessToken,
@@ -56,5 +53,4 @@ class AuthRepository {
       throw Exception('Login failed: token not found in response');
     }
   }
-
 }

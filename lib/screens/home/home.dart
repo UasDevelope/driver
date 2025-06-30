@@ -1,8 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:driver/blocs/home/bloc.dart';
-import 'package:driver/blocs/home/event.dart';
 import 'package:driver/blocs/home/state.dart';
-import 'package:driver/models/home.dart';
+import 'package:driver/core/app_routes.dart';
 import 'package:driver/screens/home/tripCard.dart';
 import 'package:driver/utils/const/app_color.dart';
 import 'package:driver/utils/const/app_img.dart';
@@ -10,7 +9,6 @@ import 'package:driver/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -138,7 +136,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         }).toList(),
                   ),
                 ),
-
                 Positioned(
                   bottom: 30,
                   left: 60,
@@ -146,8 +143,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: AppButton(
                     backgroundColor: AppColor.appColor,
                     width: 200,
-                    text: "Accept job",
-                    onPressed: () {},
+                    text: "Send Proposal",
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRoutes.proposal);
+                    },
                   ),
                 ),
               ],

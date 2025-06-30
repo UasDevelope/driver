@@ -5,6 +5,7 @@ class AppStrings {
 
   static const String emailOrPhone = "Email or Phone Number";
   static const String enterEmail = "Enter your email";
+  static const String email = "Email Address";
 
   static const String password = "Password";
   static const String enterPassword = "Enter your password";
@@ -94,5 +95,10 @@ class AppStrings {
   static const String reviews = "Reviews";
   static const String achievements = "Achievements";
   static const String friendlyTrainer = "Friendly Trainer";
+
+  //Forget screen
+  static const String resetPasswordH = "Reset Your Password";
+  static const String sendVFCode = "Send Verification Code";
+  static const String resetPasswordB = "Enter your email adress below\nand we’ll send you a link with instructions";
 
 }

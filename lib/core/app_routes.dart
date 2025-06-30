@@ -1,19 +1,15 @@
-import 'package:driver/screens/earning/earning.dart';
+import 'package:driver/screens/auth/forget_password_screen.dart';
 import 'package:driver/screens/help/help.dart';
 import 'package:driver/screens/home/home.dart';
 import 'package:driver/screens/message/messag.dart';
-import 'package:driver/screens/recentorder/order.dart';
-import 'package:driver/screens/setting/setting.dart';
-import 'package:driver/widgets/graph_widget.dart';
+import 'package:driver/screens/proposal/proposal_screen.dart';
 import 'package:flutter/material.dart';
-
 import '../screens/auth/loginSucess.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/signUp.dart';
 import '../screens/chat/chat.dart';
 import '../screens/chat/inbox.dart';
 import '../screens/location/location.dart';
-import '../screens/order/order.dart';
 import '../screens/order_detail/order_detail_screen.dart';
 import '../screens/review_screen/review_screen.dart';
 import '../screens/splash/splash.dart';
@@ -22,10 +18,12 @@ import '../screens/tabar/tabar.dart';
 class AppRoutes {
   static const String splash = '/';
   static const String login = '/login';
+  static const String forget = '/forget';
   static const String loginSucess = "/loginSuccess";
   static const String signup = "/signup";
   static const String location = "/location";
   static const String home = '/home';
+  static const String proposal = '/proposal';
   static const String earning = '/earning';
   static const String order = "/order";
   static const notification = "/notification";
@@ -60,6 +58,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => HelpScreen());
       case chatInbox:
         return MaterialPageRoute(builder: (_) => ChatInbox());
+      case proposal:
+        return MaterialPageRoute(builder: (_) => ProposalScreen());
+      case forget:
+        return MaterialPageRoute(builder: (_) => ForgetPasswordScreen());
       case message:
         return MaterialPageRoute(builder: (_) => ChatUsers());
       default:

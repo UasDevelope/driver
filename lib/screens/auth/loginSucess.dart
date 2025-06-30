@@ -1,15 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../core/app_routes.dart';
 import '../../utils/const/app_color.dart';
 import '../../utils/const/app_img.dart';
 import '../../utils/const/app_string.dart';
 import '../../widgets/app_text.dart';
 import '../../widgets/custom_button.dart';
-import '../order_detail/order_detail_screen.dart';
-import '../review_screen/review_screen.dart';
-
 
 class Loginsucess extends StatelessWidget {
   const Loginsucess({super.key});
@@ -47,15 +42,13 @@ class Loginsucess extends StatelessWidget {
               color: AppColor.light_grey,
               fontSize: 16,
             ),
-
              SizedBox(height: 80),
-
             AppButton(
               borderRadius: 10,
               backgroundColor: AppColor.appColor,
               text: AppStrings.letsExplore,
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderDetailsScreen()));
+                Navigator.pushNamed(context, AppRoutes.home);
                // Navigator.pushNamed(context, AppRoutes.location);
               },
             ),

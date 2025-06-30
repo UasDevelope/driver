@@ -2,6 +2,8 @@ import 'package:driver/blocs/splash/splash_event.dart';
 import 'package:driver/blocs/splash/splash_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../services/local.dart';
+
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
   SplashBloc() : super(const SplashInitialState()) {
     on<checkAuthenticationStatus>(_onSplashLoaded);
@@ -14,10 +16,11 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     try {
       await Future.delayed(Duration(seconds: 3));
       final bool hasToken = await _hasToken();
+      print("Has token :$hasToken");
       if (hasToken) {
-        emit(SplashNavigateToLogin());
-      } else {
         emit(SplashNavigateToHome());
+      } else {
+        emit(SplashNavigateToLogin());
       }
     } catch (e) {
       // Optionally handle error
@@ -26,6 +29,9 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
   }
 
   Future<bool> _hasToken() async {
-    return false;
+    final token = await LocalStorage.getString(LocalStorage.AcessToken);
+    print("Token here : $token");
+    return token != null && token.isNotEmpty;
   }
+
 }

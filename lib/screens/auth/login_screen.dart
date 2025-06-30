@@ -1,7 +1,4 @@
 import 'dart:developer';
-
-import 'package:driver/screens/order_detail/order_detail_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/authentication/auth_bloc.dart';
@@ -15,9 +12,7 @@ import '../../utils/validator.dart';
 import '../../widgets/app_text.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/form_field.dart';
-
 import '../../blocs/authentication/auth_event.dart';
-import '../review_screen/review_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -65,11 +60,12 @@ class _LoginScreenState extends State<LoginScreen> {
             if (state is AuthErrorState) {
               ToastHelper.showToast(message: state.message, type: ToastType.error);
             } else if (state is AuthSuccessState) {
-              Navigator.pushNamed(context, AppRoutes.loginSucess);
-              ToastHelper.showToast(
-                message: state.message,
-                type: ToastType.success,
-              );
+              Navigator.pushReplacementNamed(context, AppRoutes.loginSucess).then((value) {
+                return   ToastHelper.showToast(
+                  message: state.message,
+                  type: ToastType.success,
+                );
+              },);
             }
           }
         },
@@ -158,7 +154,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         AppText(text: AppStrings.rememberMe),
                         const Spacer(),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pushNamed(context, AppRoutes.forget);
+                          },
                           child: AppText(
                             text: AppStrings.forgotPassword,
                             color: AppColor.blue,

@@ -32,6 +32,10 @@ class AppImages {
   static get reviewimg => "reviewimg".png;
   static get satisfactionimg => "satisfactionimg".png;
   static get userimg => "userimg".png;
+
+  static get resetImage => "reset".png;
+  static get coin => "coin".png;
+  static get time => "time".png;
 }
 
 extension ImagePathExtension on String {

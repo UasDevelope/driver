@@ -2,9 +2,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
 @immutable
-abstract class AuthState extends Equatable {
+class AuthState extends Equatable {
   const AuthState();
-  List<Object> get props => [];
+  @override
+  List<Object?> get props => [];
 }
 
 class RememberChecked extends AuthState {
@@ -13,10 +14,9 @@ class RememberChecked extends AuthState {
   List<Object> get props => [isRememberMeChecked];
 }
 
-class TermsAndConditionChecked extends AuthState {
+class TermsChecked extends AuthState {
   final bool isTermsChecked;
-  const TermsAndConditionChecked({required this.isTermsChecked});
-  @override
+  const TermsChecked({required this.isTermsChecked});
   List<Object> get props => [isTermsChecked];
 }
 

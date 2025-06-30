@@ -15,14 +15,14 @@ class ApiClientImp implements BaseApiClient {
     final token =
         auth ? await LocalStorage.getString(LocalStorage.AcessToken) : null;
     final url = Uri.parse(endpoint);
-
-    log("➡️ [GET] $url");
-    if (auth && token == null)
-      log("⚠️ No token found, proceeding unauthenticated");
+    log("[GET URL] $url");
+    if (auth && token == null) {
+      log("No token found, proceeding unauthenticated");
+    }
 
     final response = await _client.get(url, headers: _header(token ?? ""));
-    log("⬅️ [RESPONSE ${response.statusCode}] ${response.body}");
-    return _handleResponse(response);
+    log("[RESPONSE ${response.statusCode}] ${response.body}");
+    return handleResponse(response);
   }
 
   @override
@@ -35,18 +35,17 @@ class ApiClientImp implements BaseApiClient {
         auth ? await LocalStorage.getString(LocalStorage.AcessToken) : null;
     final url = Uri.parse(endpoint);
 
-    log("➡️ [POST] $url\nBody: ${jsonEncode(body)}");
-    if (auth && token == null)
-      log("⚠️ No token found, proceeding unauthenticated");
-
+    log("[POST] $url\nBody: ${jsonEncode(body)}");
+    if (auth && token == null) {
+      log("No token found, proceeding unauthenticated");
+    }
     final response = await _client.post(
       url,
       headers: _header(token ?? ""),
       body: jsonEncode(body),
     );
-    log("⬅️ [RESPONSE ${response.statusCode}] ${response.body}");
-
-    return _handleResponse(response);
+    log("[RESPONSE ${response.statusCode}] ${response.body}");
+    return handleResponse(response);
   }
 
   @override
@@ -59,18 +58,17 @@ class ApiClientImp implements BaseApiClient {
         auth ? await LocalStorage.getString(LocalStorage.AcessToken) : null;
     final url = Uri.parse(endpoint);
 
-    log("➡️ [PUT] $url\nBody: ${jsonEncode(body)}");
-    if (auth && token == null)
-      log("⚠️ No token found, proceeding unauthenticated");
-
+    log("[PUT] $url\nBody: ${jsonEncode(body)}");
+    if (auth && token == null) {
+      log("No token found, proceeding unauthenticated");
+    }
     final response = await _client.put(
       url,
       headers: _header(token ?? ""),
       body: jsonEncode(body),
     );
-    log("⬅️ [RESPONSE ${response.statusCode}] ${response.body}");
-
-    return _handleResponse(response);
+    log("[RESPONSE ${response.statusCode}] ${response.body}");
+    return handleResponse(response);
   }
 
   @override
@@ -83,10 +81,10 @@ class ApiClientImp implements BaseApiClient {
         auth ? await LocalStorage.getString(LocalStorage.AcessToken) : null;
     final url = Uri.parse(endpoint);
 
-    log("➡️ [DELETE] $url\nBody: ${jsonEncode(body)}");
-    if (auth && token == null)
-      log("⚠️ No token found, proceeding unauthenticated");
-
+    log("[DELETE] $url\nBody: ${jsonEncode(body)}");
+    if (auth && token == null) {
+      log("No token found, proceeding unauthenticated");
+    }
     final request =
         http.Request("DELETE", url)
           ..headers.addAll(_header(token ?? ""))
@@ -94,10 +92,8 @@ class ApiClientImp implements BaseApiClient {
 
     final streamedResponse = await _client.send(request);
     final response = await http.Response.fromStream(streamedResponse);
-
-    log("⬅️ [RESPONSE ${response.statusCode}] ${response.body}");
-
-    return _handleResponse(response);
+    log("[RESPONSE ${response.statusCode}] ${response.body}");
+    return handleResponse(response);
   }
 
   Map<String, String> _header(String token) {
@@ -107,7 +103,7 @@ class ApiClientImp implements BaseApiClient {
     };
   }
 
-  dynamic _handleResponse(http.Response response) {
+  dynamic handleResponse(http.Response response) {
     dynamic body;
     try {
       body = json.decode(response.body);

@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:driver/models/auth_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/authentication/auth_bloc.dart';
@@ -15,7 +12,6 @@ import '../../utils/validator.dart';
 import '../../widgets/app_text.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/form_field.dart';
-
 import '../../blocs/authentication/auth_event.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -35,6 +31,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final permitController = TextEditingController();
   final certificateController = TextEditingController();
   bool isLoading = false;
+  final ValueNotifier<bool> isCheckedTerms = ValueNotifier(false);
 
   @override
   void dispose() {
@@ -44,9 +41,11 @@ class _SignupScreenState extends State<SignupScreen> {
     passwordController.dispose();
     confirmPasswordController.dispose();
     permitController.dispose();
+    isCheckedTerms.dispose();
     certificateController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +53,7 @@ class _SignupScreenState extends State<SignupScreen> {
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthLoadingState) {
-            Center(child: CircularProgressIndicator(),);
+            Center(child: CircularProgressIndicator());
           } else {
             if (state is AuthErrorState) {
               ToastHelper.showToast(
@@ -62,7 +61,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 type: ToastType.error,
               );
             } else if (state is AuthSuccessState) {
-              Navigator.pushNamed(context, AppRoutes.location);
+              Navigator.pushReplacementNamed(context, AppRoutes.location);
               ToastHelper.showToast(
                 message: state.message,
                 type: ToastType.success,
@@ -72,8 +71,6 @@ class _SignupScreenState extends State<SignupScreen> {
         },
         child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
-            final isChecked =
-                state is TermsAndConditionChecked ? state.isTermsChecked : false;
             return Form(
               key: formKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -269,50 +266,50 @@ class _SignupScreenState extends State<SignupScreen> {
                       prefixIcon: AppImages.drive,
                       validator: AppValidators.validateRequired,
                     ),
-                    // Row(
-                    //   children: [
-                    //     Checkbox(
-                    //       value: isChecked,
-                    //       onChanged: (value) {
-                    //         log("CHecking");
-                    //         context.read<AuthBloc>().add(
-                    //           CheckTermsAndConditions(isTermChecked: value!),
-                    //         );
-                    //       },
-                    //     ),
-                    //     AppText(text: AppStrings.agreeToTerms),
-                    //   ],
-                    // ),
-                    // Signup Button
-                    SizedBox(height: 10,),
+                    Row(
+                      children: [
+                        ValueListenableBuilder<bool>(
+                          valueListenable: isCheckedTerms,
+                          builder: (context, value, _) {
+                            return Checkbox(
+                              value: value,
+                              onChanged: (newValue) {
+                                isCheckedTerms.value = newValue!;
+                                print("Terms ${isCheckedTerms.value}");
+                              },
+                            );
+                          },
+                        ),
+                        AppText(text: AppStrings.agreeToTerms),
+                      ],
+                    ),
+                    SizedBox(height: 10),
                     AppButton(
                       backgroundColor: AppColor.appColor,
                       borderRadius: 10,
                       text: AppStrings.signup,
-                      onPressed:() {
-                        if(isChecked){
+                      onPressed: () {
+                        if (isCheckedTerms.value == true) {
                           if (formKey.currentState!.validate()) {
                             AuthModel authModel = AuthModel(
-                                fullName: nameController.text,
-                                email: emailController.text,
-                                contactNumber: contactController.text,
-                                password: passwordController.text,
-                                role: "serviceProvider",
-                                certificateNumber: certificateController.text,
-                                drivingPermitNumber: permitController.text
-
+                              fullName: nameController.text,
+                              email: emailController.text,
+                              contactNumber: contactController.text,
+                              password: passwordController.text,
+                              role: "serviceProvider",
+                              certificateNumber: certificateController.text,
+                              drivingPermitNumber: permitController.text,
                             );
                             context.read<AuthBloc>().add(
-                                SignUpEvent(authModel: authModel));
-
+                              SignUpEvent(authModel: authModel),
+                            );
                           }
-                        }else{
+                        } else {
                           ToastHelper.showToast(
                             message:
-                            "Please agree to the terms and conditions.",
+                                "Please agree to the terms and conditions.",
                           );
                         }
-
                       },
                     ),
 

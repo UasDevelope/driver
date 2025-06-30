@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../blocs/location/bloc.dart';
 import '../../blocs/location/event.dart';
 import '../../blocs/location/state.dart';
@@ -22,12 +20,27 @@ class LocationScreen extends StatelessWidget {
   }
 
   Widget _body() {
-    return BlocBuilder<LocationBloc, LocationState>(
-      builder: (context, state) {
-        if (state is LocationLoading) {
-          return Center(child: CircularProgressIndicator());
+    return BlocListener<LocationBloc, LocationState>(
+      listener: (context, state) {
+        if (state is LocationSucessState) {
+          Navigator.pushNamed(context, AppRoutes.home);
         }
-        if (state is LocationLoadedState) {
+      },
+      child: BlocBuilder<LocationBloc, LocationState>(
+        builder: (context, state) {
+          if (state is LocationLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          String? locationText;
+          if (state is LocationLoadedState) {
+            locationText = state.location;
+          } else if (state is LocationErrorState) {
+            locationText = "Error: ${state.message}";
+          } else if (state is LocationPermissionDenied) {
+            locationText = "Permission Denied";
+          } else {
+            locationText = AppStrings.enableLocationSubtitle;
+          }
           return Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -35,50 +48,36 @@ class LocationScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset(AppImages.location, height: 150, width: 150),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32),
                   AppText(
                     text: AppStrings.enableLocationTitle,
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                     color: AppColor.black,
                   ),
-                  const SizedBox(height: 12),
-                  // AppText(text: state.lat.toString()),
-                  // AppText(text: state.long.toString()),
-                  AppText(text: state.location.toString()),
+                  SizedBox(height: 12),
                   AppText(
-                    text: AppStrings.enableLocationSubtitle,
+                    text: locationText,
                     textAlign: TextAlign.center,
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                     color: AppColor.grey,
                   ),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32),
                   AppButton(
                     backgroundColor: AppColor.appColor,
                     borderRadius: 10,
                     text: AppStrings.enableButton,
                     onPressed: () {
                       context.read<LocationBloc>().add(RequestEnableLocation());
-                      Navigator.pushNamed(context, AppRoutes.home);
                     },
                   ),
                 ],
               ),
             ),
           );
-        }
-
-        if (state is LocationPermissionDenied) {
-          return Center(child: Text("Permission Denied"));
-        }
-
-        if (state is LocationErrorState) {
-          return Center(child: Text("Error: ${state.message}"));
-        }
-
-        return const SizedBox(child: Text("data"));
-      },
+        },
+      ),
     );
   }
 }

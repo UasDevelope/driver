@@ -8,3 +8,4 @@ abstract class OrderEvent extends Equatable {
 class OrderLoadedEvent extends OrderEvent {
   List<Object> get props => [];
 }
+class FetchBookings extends OrderEvent {}

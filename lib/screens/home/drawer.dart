@@ -5,6 +5,8 @@ import 'package:driver/utils/const/app_img.dart';
 import 'package:driver/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 
+import '../../services/local.dart';
+
 class CustomDrawer extends StatelessWidget {
   final String userName;
   final String profileImage; // Can be a network or asset path
@@ -80,8 +82,10 @@ class CustomDrawer extends StatelessWidget {
               fontWeight: FontWeight.w400,
               fontSize: 16,
             ),
-            onTap: () {
-              // Handle log out
+            onTap: () async{
+              await LocalStorage.storeString(
+                LocalStorage.AcessToken, '',);
+             Navigator.pushReplacementNamed(context, AppRoutes.login);
             },
           ),
           SizedBox(height: 20),

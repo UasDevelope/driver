@@ -1,33 +1,39 @@
 import 'dart:developer';
-
 import 'package:driver/blocs/location/state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-
+import '../../repositories/CurrentLocationRepository.dart';
+import '../../repositories/location_repository.dart';
 import 'event.dart';
 
 
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
-  LocationBloc() : super(LocationInitialState()) {
+  LocationRepository locationRepository;
+  CurrentLocationRepository currentLocationRepository;
+  LocationBloc(this.locationRepository, this.currentLocationRepository) : super(LocationInitialState()) {
     on<RequestEnableLocation>((event, emit) async {
-      log("Request Location Event Triggers");
+      log("RequestEnableLocation Triggered");
       emit(LocationLoading());
       try {
-        LocationPermission permission = await Geolocator.checkPermission();
-        if (permission == LocationPermission.denied) {
-          permission = await Geolocator.requestPermission();
+        // Fetch permission + location in one call
+        final (lat, long, locationName) =
+        await currentLocationRepository.getCurrentLocation();
+        emit(LocationLoadedState(lat: lat, long: long, location: locationName));
+        // Optionally update the location on server
+        try {
+          final response = await locationRepository.updateLocation(
+            latitude: lat,
+            longitude: long,
+            locationName: locationName,
+          );
+          emit(LocationSucessState(message: response["message"]));
+        } catch (e) {
+          emit(LocationErrorState(message: e.toString()));
         }
-
-        if (permission == LocationPermission.denied ||
-            permission == LocationPermission.deniedForever) {
-          emit(LocationPermissionDenied());
-        } else {
-          log("Location is Allowed");
-          add(FetchLocation()); // Trigger FetchLocation if permission is granted
-        }
+        log("Location fetched successfully: $lat, $long");
       } catch (e) {
-        log("Error: $e");
+        log("Location fetch failed: $e");
         emit(LocationErrorState(message: e.toString()));
       }
     });
