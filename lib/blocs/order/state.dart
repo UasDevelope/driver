@@ -3,25 +3,25 @@ import '../../models/order.dart';
 
 abstract class OrderState extends Equatable {
   const OrderState();
+  @override
   List<Object> get props => [];
 }
 
-class OrderInitalStat extends OrderState {
-  const OrderInitalStat();
+class OrderInitialStat extends OrderState {
+  const OrderInitialStat();
+  @override
   List<Object> get props => [];
 }
-
 class OrderLoadingStat extends OrderState {
   const OrderLoadingStat();
 }
-
 class OrderLoadedStat extends OrderState {
-  final List<orderModels> orderModel;
-  const OrderLoadedStat({required this.orderModel});
+  final List<SimpleBooking> bookings;
+  const OrderLoadedStat({required this.bookings});
+  @override
   List<Object> get props => [];
 }
-
 class OrderErrorStat extends OrderState {
-  OrderErrorStat();
+  const OrderErrorStat();
   List<Object> get props => [];
 }

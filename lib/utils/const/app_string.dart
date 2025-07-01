@@ -59,7 +59,7 @@ class AppStrings {
   static const String enableButton = "Enable";
   static const String welcomeMessage = "👋 Welcome back, {name}!";
   static const String statusNew = "New";
-  static const String statusActive = "Active";
+  static const String statusPending = "Pending";
   static const String statusInProgress = "In Progress";
   static const String statusCompleted = "Completed";
 

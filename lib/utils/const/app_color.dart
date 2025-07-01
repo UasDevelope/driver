@@ -9,6 +9,7 @@ class AppColor {
   static get light_black => Color(0xff0D120E);
   static get light_black2 => Color(0xff969AA8);
   static get light_grey => Color(0xff7F909F);
+  static get light_grey2 => Color(0x947f909f);
   static get grey => Color(0xffA2A2A2);
   static get black => Color(0xff000000);
   static get white => Colors.white;

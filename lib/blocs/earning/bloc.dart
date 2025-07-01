@@ -1,37 +1,54 @@
+import 'dart:developer';
 import 'package:driver/blocs/earning/state.dart';
+import 'package:driver/repositories/earnings_repository.dart';
+import 'package:driver/repositories/recent_orders_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../models/EarningsModel.dart';
 import 'event.dart';
 
 class EarningsBloc extends Bloc<EarningsEvent, EarningsState> {
+  EarningsRepository earningsRepo = EarningsRepository();
+  RecentOrdersRepository recentOrdersRepo = RecentOrdersRepository();
   EarningsBloc() : super(EarningsInitial()) {
-    on<LoadEarningsEvent>((event, emit) async {
-      emit(EarningsLoading());
+    on<LoadEarningsEvent>(fetchEarnings);
+    on<LoadEarningsEventPeriod>(fetchEarningsPeriod);
+    on<RecentOrdersEvent>(fetchOrders);
+  }
+  void fetchEarnings(LoadEarningsEvent event , Emitter<EarningsState> emit)async {
+    emit(EarningsLoading());
+    try {
+      final earningsData = await earningsRepo.getEarnings(
+        startDate: event.startDate,
+        endDate: event.endDate,
+        groupBy: event.groupBy,);
+      emit(EarningsLoaded(earningsData));
+    } catch (e) {
+      log("Error here $e");
+      rethrow;
+    }
+  }
 
-      // Dummy map data
-      await Future.delayed(Duration(seconds: 1)); // Simulate network delay
+  void fetchEarningsPeriod(LoadEarningsEventPeriod event , Emitter<EarningsState> emit)async {
+    try {
+      final earningsData = await earningsRepo.getEarnings(
+        startDate: event.startDate,
+        endDate: event.endDate,
+        groupBy: event.groupBy,);
+      emit(EarningsLoaded(earningsData));
+    } catch (e) {
+      log("Error here $e");
+      rethrow;
+    }
+  }
 
-      final data = EarningsModel(
-        totalEarnings: 2144.06,
-        totalOrders: 123,
-        totalOnlineTime: '23h 39m',
-        weekStats: {
-          'Mo': 1500,
-          'Tu': 2200,
-          'We': 700,
-          'Th': 1600,
-          'Fr': 2100,
-          'Sa': 800,
-          'Su': 1500,
-        },
-        recentOrders: [
-          OrderModel(id: '#123', date: '17/06/2023', amount: 31.23),
-          OrderModel(id: '#567', date: '17/06/2023', amount: 61.23),
-        ],
-      );
-
-      emit(EarningsLoaded(data));
-    });
+  void fetchOrders(RecentOrdersEvent event , Emitter<EarningsState> emit)async {
+    emit(RecentOrdersLoading());
+    try {
+      final orderData = await recentOrdersRepo.getRecentOrders();
+      log("Orders data here : ${orderData.bookings!.length}");
+      emit(RecentOrdersLoaded(orderData));
+    } catch (e) {
+      log("Error here $e");
+      rethrow;
+    }
   }
 }

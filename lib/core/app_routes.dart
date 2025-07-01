@@ -1,4 +1,5 @@
 import 'package:driver/screens/auth/forget_password_screen.dart';
+import 'package:driver/screens/earning/earning.dart';
 import 'package:driver/screens/help/help.dart';
 import 'package:driver/screens/home/home.dart';
 import 'package:driver/screens/message/messag.dart';
@@ -13,7 +14,7 @@ import '../screens/location/location.dart';
 import '../screens/order_detail/order_detail_screen.dart';
 import '../screens/review_screen/review_screen.dart';
 import '../screens/splash/splash.dart';
-import '../screens/tabar/tabar.dart';
+import '../screens/order/tabar.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -49,7 +50,7 @@ class AppRoutes {
       case order:
         return MaterialPageRoute(builder: (_) => TabarScreen());
       case earning:
-        return MaterialPageRoute(builder: (_) => OrderDetailsScreen());
+        return MaterialPageRoute(builder: (_) => EarningsScreen());
       case notification:
         return MaterialPageRoute(builder: (_) => UserChatScreen());
       case settings:

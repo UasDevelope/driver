@@ -1,3 +1,4 @@
+import 'package:driver/blocs/earning/bloc.dart';
 import 'package:driver/blocs/home/bloc.dart';
 import 'package:driver/blocs/home/event.dart';
 import 'package:driver/blocs/order/bloc.dart';
@@ -22,11 +23,15 @@ List<BlocProvider> getAppBlocProvider() {
     BlocProvider<SplashBloc>(
       create: (context) => SplashBloc()..add(checkAuthenticationStatus()),
     ),
-    BlocProvider<ProposalBloc>(
-      create: (context) => ProposalBloc()),
-    BlocProvider<AuthBloc>(create: (_) => AuthBloc(authRepository: AuthRepository())),
+    BlocProvider<ProposalBloc>(create: (context) => ProposalBloc()),
+    BlocProvider<AuthBloc>(
+      create: (_) => AuthBloc(authRepository: AuthRepository()),
+    ),
     BlocProvider<LocationBloc>(
-      create: (_) => LocationBloc(LocationRepository(),CurrentLocationRepository())..add(RequestEnableLocation()),
+      create:
+          (_) =>
+              LocationBloc(LocationRepository(), CurrentLocationRepository())
+                ..add(RequestEnableLocation()),
     ),
     BlocProvider<HomeBloc>(create: (_) => HomeBloc()..add(HomeLoadedEvent())),
     BlocProvider<ChatUserBloc>(
@@ -36,7 +41,8 @@ List<BlocProvider> getAppBlocProvider() {
       create: (_) => ChatInboxBloc()..add(ChatLoadedEvent()),
     ),
     BlocProvider<OrderBloc>(
-      create: (_) => OrderBloc()..add(OrderLoadedEvent()),
+      create: (_) => OrderBloc(),
     ),
+    BlocProvider<EarningsBloc>(create: (_) => EarningsBloc()),
   ];
 }

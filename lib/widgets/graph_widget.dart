@@ -1,31 +1,39 @@
+import 'package:driver/models/EarningsModel.dart';
+import 'package:driver/widgets/app_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import '../blocs/earning/bloc.dart';
+import '../blocs/earning/event.dart';
 
 class EarningsGraph extends StatefulWidget {
+  final EarningsModel earnings;
+  const EarningsGraph({super.key, required this.earnings});
+
   @override
   _EarningsGraphState createState() => _EarningsGraphState();
 }
 
 class _EarningsGraphState extends State<EarningsGraph> {
-  String selectedPeriod = 'Day';
+  String? selectedPeriod;
+  final List<String> toggleOptions = ['Day', 'Week', 'Month'];
 
-  final barData = {
-    'Mo': 1500.0,
-    'Tu': 2100.0,
-    'We': 800.0,
-    'Th': 1500.0,
-    'Fr': 2100.0,
-    'Sa': 800.0,
-    'Su': 1500.0,
-  };
+  @override
+  void initState() {
+    super.initState();
+    selectedPeriod = 'Day';
+    context.read<EarningsBloc>().add(
+        LoadEarningsEventPeriod(groupBy: selectedPeriod.toString().toLowerCase()));
+  }
 
   @override
   Widget build(BuildContext context) {
-    final dayKeys = barData.keys.toList();
+    final graphData = widget.earnings.earningsGraph;
 
     return Container(
-      margin: EdgeInsets.all(16),
-      padding: EdgeInsets.all(16),
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -34,7 +42,6 @@ class _EarningsGraphState extends State<EarningsGraph> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Toggle buttons
           SizedBox(
             height: 40,
             child: ToggleButtons(
@@ -46,27 +53,35 @@ class _EarningsGraphState extends State<EarningsGraph> {
                   .map((e) => e == selectedPeriod)
                   .toList(),
               onPressed: (index) {
+                final newPeriod = ['Day', 'Week', 'Month'][index]; // 1. Store new value
+
                 setState(() {
-                  selectedPeriod = ['Day', 'Week', 'Month'][index];
+                  selectedPeriod = newPeriod;
                 });
+                context.read<EarningsBloc>().add(
+                  LoadEarningsEventPeriod(groupBy: newPeriod.toLowerCase()),
+                );
               },
+
               children: ['Day', 'Week', 'Month']
-                  .map((e) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: Text(e),
-              ))
+                  .map(
+                    (e) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Text(e),
+                ),
+              )
                   .toList(),
             ),
           ),
           const SizedBox(height: 20),
-
           // Bar chart
           AspectRatio(
-            aspectRatio: 1.7,
+            aspectRatio: 1.6,
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
                 maxY: 2500,
+                minY: 0,
                 barTouchData: BarTouchData(enabled: false),
                 titlesData: FlTitlesData(
                   bottomTitles: AxisTitles(
@@ -74,13 +89,16 @@ class _EarningsGraphState extends State<EarningsGraph> {
                       showTitles: true,
                       getTitlesWidget: (value, _) {
                         final index = value.toInt();
-                        if (index >= 0 && index < dayKeys.length) {
-                          return Text(
-                            dayKeys[index],
-                            style: TextStyle(fontWeight: FontWeight.w500),
+                        if (index >= 0 && index < graphData.length) {
+                          return AppText(
+                          text:   graphData[index].label == DateFormat('yyyy-MM-dd').format(DateTime.now())
+                                ? 'Today'
+                                : graphData[index].label,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
                           );
                         }
-                        return Text('');
+                        return const Text('');
                       },
                     ),
                   ),
@@ -99,14 +117,14 @@ class _EarningsGraphState extends State<EarningsGraph> {
                   ),
                 ),
                 borderData: FlBorderData(show: false),
-                barGroups: barData.entries.toList().asMap().entries.map((entry) {
+                barGroups: graphData.asMap().entries.map((entry) {
                   final index = entry.key;
                   final data = entry.value;
                   return BarChartGroupData(
                     x: index,
                     barRods: [
                       BarChartRodData(
-                        toY: data.value,
+                        toY: data.amount,
                         color: Colors.blueAccent,
                         width: 16,
                         borderRadius: BorderRadius.circular(6),
@@ -117,27 +135,27 @@ class _EarningsGraphState extends State<EarningsGraph> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
-
-          // Detail button
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xff0D0140),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-              ),
-              onPressed: () {
-                // Detail logic
-              },
-              child: const Text(
-                "Detail",
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
-            ),
-          )
+          // const SizedBox(height: 20),
+          //
+          // // Detail button
+          // SizedBox(
+          //   width: double.infinity,
+          //   child: ElevatedButton(
+          //     style: ElevatedButton.styleFrom(
+          //       backgroundColor: Color(0xff0D0140),
+          //       padding: const EdgeInsets.symmetric(vertical: 14),
+          //       shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(10)),
+          //     ),
+          //     onPressed: () {
+          //       // Detail logic
+          //     },
+          //     child: const Text(
+          //       "Detail",
+          //       style: TextStyle(color: Colors.white, fontSize: 16),
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );

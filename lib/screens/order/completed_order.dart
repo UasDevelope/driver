@@ -1,8 +1,9 @@
+import 'package:driver/api/api_const.dart';
 import 'package:driver/blocs/order/bloc.dart';
+import 'package:driver/blocs/order/event.dart';
 import 'package:driver/blocs/order/state.dart';
 import 'package:driver/models/order.dart';
 import 'package:driver/screens/home/drawer.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../utils/const/app_color.dart';
@@ -10,15 +11,21 @@ import '../../utils/const/app_img.dart';
 import '../../utils/const/app_string.dart';
 import '../../widgets/app_text.dart';
 import '../../widgets/custom_button.dart';
+import 'booking_card.dart';
 
-class OrderScreen extends StatelessWidget {
-  const OrderScreen({super.key});
+class CompletedOrdersScreen extends StatelessWidget {
+  const CompletedOrdersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    context.read<OrderBloc>().add(
+      OrderLoadedEvent(ApiConstants.completedBookings),
+    );
     return Scaffold(
-        drawer:CustomDrawer(userName: "Usama", profileImage: AppImages.profile),
-        backgroundColor: Colors.white, body: _body());
+      drawer: CustomDrawer(userName: "Usama", profileImage: AppImages.profile),
+      backgroundColor: Colors.white,
+      body: _body(),
+    );
   }
 
   Widget _body() {
@@ -30,10 +37,10 @@ class OrderScreen extends StatelessWidget {
         if (state is OrderLoadedStat) {
           return ListView.builder(
             padding: const EdgeInsets.all(12),
-            itemCount: state.orderModel.length,
+            itemCount: state.bookings.length,
             itemBuilder: (context, index) {
-              final item = state.orderModel[index];
-              return _homeCard(item);
+              final item = state.bookings[index];
+              return BookingCard(item: item);
             },
           );
         }

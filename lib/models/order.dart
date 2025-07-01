@@ -36,3 +36,37 @@ class orderModels {
     );
   }
 }
+class SimpleBooking {
+  final String? customerName;
+  final String? bookingId;
+  final int? hours;
+  final String? assignedDriver;
+  final String? driverPermitNumber;
+  final DateTime? date;
+  final String? time;
+  final int? price;
+
+  SimpleBooking({
+    this.customerName,
+    this.bookingId,
+    this.hours,
+    this.assignedDriver,
+    this.driverPermitNumber,
+    this.date,
+    this.time,
+    this.price,
+  });
+
+  factory SimpleBooking.fromJson(Map<String, dynamic> json) {
+    return SimpleBooking(
+      customerName: json['customerName'],
+      bookingId: json['bookingId'],
+      hours: json['hours'],
+      assignedDriver: json['assignedDriver'],
+      driverPermitNumber: json['driverPermitNumber'],
+      date: json['date'] != null ? DateTime.tryParse(json['date']) : null,
+      time: json['time'],
+      price: json['price'],
+    );
+  }
+}

@@ -2,10 +2,13 @@ import 'package:equatable/equatable.dart';
 
 abstract class OrderEvent extends Equatable {
   const OrderEvent();
+  @override
   List<Object> get props => [];
 }
 
 class OrderLoadedEvent extends OrderEvent {
-  List<Object> get props => [];
+  final String endPoint;
+  const OrderLoadedEvent(this.endPoint);
+  @override
+  List<Object> get props => [endPoint];
 }
-class FetchBookings extends OrderEvent {}

@@ -11,10 +11,10 @@ class ApiClientImp implements BaseApiClient {
   ApiClientImp(this._client);
 
   @override
-  Future<dynamic> get(String endpoint, {bool auth = true}) async {
+  Future<dynamic> get(String endpoint, {bool auth = true,Map<String, dynamic>? queryParameters,}) async {
     final token =
         auth ? await LocalStorage.getString(LocalStorage.AcessToken) : null;
-    final url = Uri.parse(endpoint);
+    final url = Uri.parse(endpoint).replace(queryParameters: queryParameters);
     log("[GET URL] $url");
     if (auth && token == null) {
       log("No token found, proceeding unauthenticated");
