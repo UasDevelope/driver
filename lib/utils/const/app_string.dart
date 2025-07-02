@@ -79,7 +79,7 @@ class AppStrings {
   static const String navChat = "Chat";
   static const String navSetting = "Setting";
 
-  static const String orderPrefix = "Orders";
+  static const String orderPrefix = "Order";
   static const String earnings = "Earnings";
   static const String onlinePrefix = "Online";
   static const String recentOrders = "Recent orders";

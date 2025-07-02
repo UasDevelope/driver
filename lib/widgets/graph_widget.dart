@@ -1,4 +1,5 @@
 import 'package:driver/models/EarningsModel.dart';
+import 'package:driver/utils/const/app_color.dart';
 import 'package:driver/widgets/app_text.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,6 @@ class _EarningsGraphState extends State<EarningsGraph> {
                   .toList(),
               onPressed: (index) {
                 final newPeriod = ['Day', 'Week', 'Month'][index]; // 1. Store new value
-
                 setState(() {
                   selectedPeriod = newPeriod;
                 });
@@ -74,7 +74,6 @@ class _EarningsGraphState extends State<EarningsGraph> {
             ),
           ),
           const SizedBox(height: 20),
-          // Bar chart
           AspectRatio(
             aspectRatio: 1.6,
             child: BarChart(
@@ -82,6 +81,22 @@ class _EarningsGraphState extends State<EarningsGraph> {
                 alignment: BarChartAlignment.spaceAround,
                 maxY: 2500,
                 minY: 0,
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: true,
+                  verticalInterval: 1,
+                  getDrawingVerticalLine: (value) => FlLine(
+                    color: Colors.grey.withOpacity(0.3),
+                    strokeWidth: 1,
+                    dashArray: [4, 4], // dotted vertical lines
+                  ),
+                  drawHorizontalLine: true,
+                  horizontalInterval: 500,
+                  getDrawingHorizontalLine: (value) => FlLine(
+                    color: AppColor.light_grey2,
+                    strokeWidth: 1,
+                  ),
+                ),
                 barTouchData: BarTouchData(enabled: false),
                 titlesData: FlTitlesData(
                   bottomTitles: AxisTitles(
@@ -122,6 +137,7 @@ class _EarningsGraphState extends State<EarningsGraph> {
                   final data = entry.value;
                   return BarChartGroupData(
                     x: index,
+
                     barRods: [
                       BarChartRodData(
                         toY: data.amount,

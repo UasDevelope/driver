@@ -2,7 +2,7 @@ import 'package:driver/blocs/earning/bloc.dart';
 import 'package:driver/blocs/home/bloc.dart';
 import 'package:driver/blocs/home/event.dart';
 import 'package:driver/blocs/order/bloc.dart';
-import 'package:driver/blocs/order/event.dart';
+import 'package:driver/blocs/profile/profile_bloc.dart';
 import 'package:driver/blocs/propsal/propsal_bloc.dart';
 import 'package:driver/repositories/CurrentLocationRepository.dart';
 import 'package:driver/repositories/auth_repository.dart';
@@ -44,5 +44,6 @@ List<BlocProvider> getAppBlocProvider() {
       create: (_) => OrderBloc(),
     ),
     BlocProvider<EarningsBloc>(create: (_) => EarningsBloc()),
+    BlocProvider<ProfileBloc>(create: (_) => ProfileBloc()),
   ];
 }

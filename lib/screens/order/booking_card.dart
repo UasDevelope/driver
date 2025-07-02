@@ -6,7 +6,7 @@ import '../../utils/const/app_img.dart';
 import '../../widgets/app_text.dart';
 
 class BookingCard extends StatelessWidget {
-  final SimpleBooking item;
+  final OrdersModel item;
   final VoidCallback? onPaymentPressed;
 
   const BookingCard({
@@ -114,7 +114,7 @@ class BookingCard extends StatelessWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: AppText(
-                    text: "Location: Not from backend", // Consider using location
+                    text: item.locationName!, // Consider using location
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
                     color: AppColor.black,

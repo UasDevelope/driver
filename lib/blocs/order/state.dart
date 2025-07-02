@@ -16,10 +16,10 @@ class OrderLoadingStat extends OrderState {
   const OrderLoadingStat();
 }
 class OrderLoadedStat extends OrderState {
-  final List<SimpleBooking> bookings;
+  final List<OrdersModel> bookings;
   const OrderLoadedStat({required this.bookings});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [bookings];
 }
 class OrderErrorStat extends OrderState {
   const OrderErrorStat();

@@ -1,24 +1,19 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:driver/blocs/earning/state.dart';
 import 'package:driver/blocs/home/bloc.dart';
 import 'package:driver/blocs/home/state.dart';
-import 'package:driver/core/app_routes.dart';
 import 'package:driver/screens/home/tripCard.dart';
-import 'package:driver/utils/const/app_color.dart';
 import 'package:driver/utils/const/app_img.dart';
-import 'package:driver/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../blocs/earning/bloc.dart';
+import '../../blocs/earning/event.dart';
 import 'drawer.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatelessWidget {
+  HomeScreen({Key? key}) : super(key: key);
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
   late GoogleMapController _mapController;
 
   final CameraPosition _initialPosition = CameraPosition(
@@ -28,12 +23,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    context.read<EarningsBloc>().add(LoadEarningsEvent());
     return Scaffold(
       drawer: CustomDrawer(
         userName: "Joseph",
-        profileImage: AppImages.person, // Replace with actual image path
+        profileImage: AppImages.person,
       ),
       body: BlocBuilder<HomeBloc, HomeState>(
+        buildWhen: (previous, current) =>
+        current is HomeLoadingState || current is HomeLoadedState,
         builder: (context, state) {
           if (state is HomeLoadingState) {
             return Center(child: CircularProgressIndicator());
@@ -46,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: GoogleMap(
                     polylines: state.polyLines,
                     initialCameraPosition: _initialPosition,
-                    zoomControlsEnabled: true,
+                    zoomControlsEnabled: false,
                     myLocationEnabled: true,
                     markers: state.marker,
                     onMapCreated: (controller) {
@@ -54,8 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                 ),
-
-                // Top Bar
                 Positioned(
                   top: 50,
                   left: 16,
@@ -65,7 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Builder(
                         builder:
-                            (context) => Container(
+                            (context) =>
+                            Container(
                               height: 40,
                               width: 40,
                               decoration: BoxDecoration(
@@ -80,19 +77,28 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                       ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Text(
-                          "\$0",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                      BlocBuilder<EarningsBloc, EarningsState>(
+                        buildWhen: (previous, current) =>
+                        current is EarningsLoading || current is EarningsLoaded,
+                        builder: (context, state) {
+                          if(state is EarningsLoaded){
+                            return Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Text(
+                                "\$${state.earnings.totalEarnings}",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            );
+                          }
+                          return SizedBox.shrink();
+                        },
                       ),
                       Container(
                         height: 40,
@@ -109,15 +115,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-
-                //  Bottom Sheet
                 Positioned(
-                  bottom: 90,
+                  bottom: 30,
                   left: 10,
                   right: 10,
                   child: CarouselSlider(
                     options: CarouselOptions(
-                      height: 350, // Adjust based on card size
+                      height: 350,
                       autoPlay: true,
                       autoPlayInterval: Duration(seconds: 3),
                       enlargeCenterPage: true,
@@ -125,28 +129,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       scrollDirection: Axis.horizontal,
                     ),
                     items:
-                        state.homeModel.map((data) {
-                          return Builder(
-                            builder: (BuildContext context) {
-                              return TripCard(
-                                data: data,
-                              ); // Your custom trip card widget
-                            },
-                          );
-                        }).toList(),
-                  ),
-                ),
-                Positioned(
-                  bottom: 30,
-                  left: 60,
-                  right: 60,
-                  child: AppButton(
-                    backgroundColor: AppColor.appColor,
-                    width: 200,
-                    text: "Send Proposal",
-                    onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.proposal);
-                    },
+                    state.ordersModel.map((data) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return TripCard(
+                            data: data,
+                          ); // Your custom trip card widget
+                        },
+                      );
+                    }).toList(),
                   ),
                 ),
               ],

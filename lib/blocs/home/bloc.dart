@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:driver/api/api_const.dart';
 import 'package:driver/blocs/home/event.dart';
 import 'package:driver/blocs/home/state.dart';
 import 'package:driver/dummy/home.dart';
@@ -9,88 +10,93 @@ import 'package:driver/utils/const/app_img.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc() : super(HomeInitialState()) {
-    on<HomeLoadedEvent>(_onLoadHomeData);
-  }
+import '../../models/order.dart';
+import '../../repositories/orders_repository.dart';
+import '../location/state.dart';
 
-  Future<void> _onLoadHomeData(
-    HomeLoadedEvent event,
-    Emitter<HomeState> emit,
-  ) async {
+class HomeBloc extends Bloc<HomeEvent, HomeState> {
+  OrdersRepository ordersRepo = OrdersRepository();
+  HomeBloc() : super(HomeInitialState()) {
+    on<HomeLoadedEvent>(fetchOrders);
+    on<FetchLocationDetailsEvent>(onFetchLocationDetails);
+  }
+  void fetchOrders(HomeLoadedEvent event, Emitter<HomeState> emit) async {
     emit(HomeLoadingState());
 
     try {
-      final homeDummy = HomeDummy();
-      final homedata =
-          homeDummy.homeData.map((e) => HomeModel.fromMap(e)).toList();
+      List<OrdersModel> orders = await ordersRepo.getBookings(ApiConstants.pendingBookings);
 
       final Set<Polyline> polyLines = {};
       final Set<Marker> marker = {};
-      final cameraPosition = CameraPosition(
-        target: LatLng(homedata[0].studentLat, homedata[0].studentLong),
+      CameraPosition cameraPosition = const CameraPosition(
+        target: LatLng(89.0, 9.0),
         zoom: 10,
       );
 
-      for (var i = 0; i < homedata.length; i++) {
-        final item = homedata[i];
-        final studentLatLng = LatLng(item.studentLat, item.studentLong);
-        final driverLatLng = LatLng(item.driverLat, item.driverLong);
-        final studentIcon = await _getCustomIcon(AppImages.start);
-        final driverIcon = await _getCustomIcon(AppImages.end);
-        print("Student icon path: ${AppImages.start}");
-        print("Driver icon path: ${AppImages.end}");
-
-        marker.add(
-          Marker(
-            markerId: MarkerId('student_${i}'),
-            position: studentLatLng,
-            icon: studentIcon,
-            infoWindow: InfoWindow(title: 'Student ${item.studentName}'),
-          ),
+      if (orders.isNotEmpty) {
+        cameraPosition = CameraPosition(
+          target: LatLng(89.0, 89.7),
+          zoom: 12,
         );
 
-        marker.add(
-          Marker(
-            markerId: MarkerId('driver_${i}'),
-            position: driverLatLng,
-            icon: driverIcon,
-            infoWindow: InfoWindow(title: 'Driver ${item.driverStateCountry}'),
-          ),
-        );
+        for (int i = 0; i < orders.length; i++) {
+          final order = orders[i];
+          final customerLatLong = LatLng(31.5204, 74.3587);
+          final driverLatLng = LatLng(order.latitude!,order.longitude!);
 
-        final route = await _getPolyline(studentLatLng, driverLatLng);
-        print('Polyline route for item $i: ${route.length} points');
+          final studentIcon = await getCustomIcon(AppImages.start);
+          final driverIcon = await getCustomIcon(AppImages.end);
 
-        if (route.isNotEmpty) {
-          polyLines.add(
-            Polyline(
-              polylineId: PolylineId('route_$i'),
-              points: route,
-              color: Color(0xFF4285F4),
-              width: 5,
+          marker.add(
+            Marker(
+              markerId: MarkerId('student_$i'),
+              position: customerLatLong,
+              icon: studentIcon,
+              infoWindow: InfoWindow(title: 'Customer ${order.customerName}'),
             ),
           );
+
+          marker.add(
+            Marker(
+              markerId: MarkerId('driver_$i'),
+              position: driverLatLng,
+              icon: driverIcon,
+              // infoWindow: InfoWindow(title: 'Driver ${order.driverStateCountry}'),
+              infoWindow: InfoWindow(title: 'Driver ${order.locationName}'),
+            ),
+          );
+
+          final route = await getPolyline(customerLatLong, driverLatLng);
+          if (route.isNotEmpty) {
+            polyLines.add(
+              Polyline(
+                polylineId: PolylineId('route_$i'),
+                points: route,
+                color: const Color(0xFF4285F4),
+                width: 5,
+              ),
+            );
+          }
         }
       }
 
       emit(
         HomeLoadedState(
-          homeModel: homedata,
+          ordersModel: orders,
           cameraPosition: cameraPosition,
           polyLines: polyLines,
           marker: marker,
         ),
       );
     } catch (e) {
-      log("Error in _onLoadHomeData: $e");
-      // emit error state if needed
+      log("Error in fetchOrders: $e");
+      // Optionally: emit an error state
     }
   }
-
-  Future<List<LatLng>> _getPolyline(LatLng start, LatLng end) async {
+  Future<List<LatLng>> getPolyline(LatLng start, LatLng end) async {
     final polylinePoints = PolylinePoints();
 
     final request = PolylineRequest(
@@ -111,9 +117,36 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 }
 
-Future<BitmapDescriptor> _getCustomIcon(String assetPath) async {
+Future<BitmapDescriptor> getCustomIcon(String assetPath) async {
   return await BitmapDescriptor.fromAssetImage(
     ImageConfiguration(size: Size(48, 48)), // You can adjust size
     assetPath,
   );
+}
+
+void onFetchLocationDetails(FetchLocationDetailsEvent event, Emitter<HomeState> emit,) async {
+  emit(LocationLoadingState());
+  try {
+    List<Placemark> placemarks =
+    await placemarkFromCoordinates(event.latitude, event.longitude);
+
+    if (placemarks.isNotEmpty) {
+      final place = placemarks.first;
+      final city = place.locality ?? '';
+      final country = place.country ?? '';
+      final address = [
+        place.name,
+        place.subLocality,
+        place.locality,
+        place.administrativeArea,
+        place.country,
+      ].where((e) => e != null && e.isNotEmpty).join(', ');
+
+      emit(LocationLoaded(city: city, country: country, address: address));
+    } else {
+      emit(LocationError("Location not found"));
+    }
+  } catch (e) {
+    emit(LocationError( "Error: ${e.toString()}"));
+  }
 }

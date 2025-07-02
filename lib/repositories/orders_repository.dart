@@ -5,12 +5,12 @@ import '../api/base_api_client.dart';
 class OrdersRepository {
   final BaseApiClient apiClient = GetIt.instance<BaseApiClient>();
 
-  Future<List<SimpleBooking>> getBookings(String endPont) async {
+  Future<List<OrdersModel>> getBookings(String endPont) async {
     final response = await apiClient.get(endPont);
     if (response != null && response['bookings'] is List) {
       final bookingsJson = response['bookings'] as List<dynamic>;
       return bookingsJson
-          .map((item) => SimpleBooking.fromJson(item as Map<String, dynamic>))
+          .map((item) => OrdersModel.fromJson(item as Map<String, dynamic>))
           .toList();
     } else {
       return [];

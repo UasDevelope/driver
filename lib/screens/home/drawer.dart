@@ -1,59 +1,87 @@
-// custom_drawer.dart
+import 'package:driver/blocs/profile/profile_state.dart';
 import 'package:driver/core/app_routes.dart';
 import 'package:driver/utils/const/app_color.dart';
 import 'package:driver/utils/const/app_img.dart';
 import 'package:driver/widgets/app_text.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/profile/profile_bloc.dart';
+import '../../blocs/profile/profile_event.dart';
 import '../../services/local.dart';
 
 class CustomDrawer extends StatelessWidget {
   final String userName;
-  final String profileImage; // Can be a network or asset path
+  final String profileImage;
 
   const CustomDrawer({
-    Key? key,
+    super.key,
     required this.userName,
     required this.profileImage,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
+    context.read<ProfileBloc>().add(GetProfileEvent());
     return Drawer(
       backgroundColor: Colors.white,
       child: Column(
         children: [
-          DrawerHeader(
-            padding: const EdgeInsets.all(6),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundImage: AssetImage(
-                    profileImage,
-                  ), // or use NetworkImage
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText(
-                      text: "Welcome back,",
-                      color: AppColor.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
+          BlocBuilder<ProfileBloc, ProfileState>(
+            buildWhen:
+                (previous, current) =>
+                    current is ProfileLoadingState || current is ProfileLoaded,
+            builder: (BuildContext context, ProfileState state) {
+              if (state is ProfileLoadingState) {
+                return SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(color: AppColor.appColor),
                     ),
-                    AppText(
-                      text: userName,
-                      color: AppColor.black,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                );
+              } else if (state is ProfileLoaded) {
+                return DrawerHeader(
+                  padding: const EdgeInsets.all(6),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: AppColor.appColor,
+                        child: AppText(
+                          text: state.profile.user.fullName[0].toLowerCase(),
+                          color: AppColor.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 34,
+                        ), // or use NetworkImage
+                      ),
+                      const SizedBox(width: 12),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppText(
+                            text: "Welcome back,",
+                            color: AppColor.black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                          AppText(
+                            text: state.profile.user.fullName,
+                            color: AppColor.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return SizedBox.shrink();
+            },
           ),
           _buildDrawerItem(AppImages.clock, "Recent Orders", () {
             Navigator.pushNamed(context, AppRoutes.order);
@@ -82,10 +110,9 @@ class CustomDrawer extends StatelessWidget {
               fontWeight: FontWeight.w400,
               fontSize: 16,
             ),
-            onTap: () async{
-              await LocalStorage.storeString(
-                LocalStorage.AcessToken, '',);
-             Navigator.pushReplacementNamed(context, AppRoutes.login);
+            onTap: () async {
+              await LocalStorage.storeString(LocalStorage.AcessToken, '');
+              Navigator.pushReplacementNamed(context, AppRoutes.login);
             },
           ),
           SizedBox(height: 20),

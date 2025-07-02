@@ -59,8 +59,6 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => HelpScreen());
       case chatInbox:
         return MaterialPageRoute(builder: (_) => ChatInbox());
-      case proposal:
-        return MaterialPageRoute(builder: (_) => ProposalScreen());
       case forget:
         return MaterialPageRoute(builder: (_) => ForgetPasswordScreen());
       case message:
