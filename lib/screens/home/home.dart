@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../blocs/earning/bloc.dart';
 import '../../blocs/earning/event.dart';
+import '../../blocs/home/event.dart';
 import 'drawer.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -24,14 +25,13 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<EarningsBloc>().add(LoadEarningsEvent());
+    context.read<HomeBloc>().add(HomeLoadedEvent());
     return Scaffold(
-      drawer: CustomDrawer(
-        userName: "Joseph",
-        profileImage: AppImages.person,
-      ),
+      drawer: CustomDrawer(userName: "Joseph", profileImage: AppImages.person),
       body: BlocBuilder<HomeBloc, HomeState>(
-        buildWhen: (previous, current) =>
-        current is HomeLoadingState || current is HomeLoadedState,
+        buildWhen:
+            (previous, current) =>
+                current is HomeLoadingState || current is HomeLoadedState,
         builder: (context, state) {
           if (state is HomeLoadingState) {
             return Center(child: CircularProgressIndicator());
@@ -44,8 +44,10 @@ class HomeScreen extends StatelessWidget {
                   child: GoogleMap(
                     polylines: state.polyLines,
                     initialCameraPosition: _initialPosition,
-                    zoomControlsEnabled: false,
+                    zoomControlsEnabled:
+                        state.ordersModel.isEmpty ? true : false,
                     myLocationEnabled: true,
+                    indoorViewEnabled: true,
                     markers: state.marker,
                     onMapCreated: (controller) {
                       _mapController = controller;
@@ -61,8 +63,7 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       Builder(
                         builder:
-                            (context) =>
-                            Container(
+                            (context) => Container(
                               height: 40,
                               width: 40,
                               decoration: BoxDecoration(
@@ -78,10 +79,12 @@ class HomeScreen extends StatelessWidget {
                             ),
                       ),
                       BlocBuilder<EarningsBloc, EarningsState>(
-                        buildWhen: (previous, current) =>
-                        current is EarningsLoading || current is EarningsLoaded,
+                        buildWhen:
+                            (previous, current) =>
+                                current is EarningsLoading ||
+                                current is EarningsLoaded,
                         builder: (context, state) {
-                          if(state is EarningsLoaded){
+                          if (state is EarningsLoaded) {
                             return Container(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 12,
@@ -121,7 +124,7 @@ class HomeScreen extends StatelessWidget {
                   right: 10,
                   child: CarouselSlider(
                     options: CarouselOptions(
-                      height: 350,
+                      height: 280,
                       autoPlay: true,
                       autoPlayInterval: Duration(seconds: 3),
                       enlargeCenterPage: true,
@@ -129,15 +132,15 @@ class HomeScreen extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                     ),
                     items:
-                    state.ordersModel.map((data) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return TripCard(
-                            data: data,
-                          ); // Your custom trip card widget
-                        },
-                      );
-                    }).toList(),
+                        state.ordersModel.map((data) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return TripCard(
+                                data: data,
+                              ); // Your custom trip card widget
+                            },
+                          );
+                        }).toList(),
                   ),
                 ),
               ],

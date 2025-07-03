@@ -5,6 +5,8 @@ class BookingProposalModel {
   final String time;
   final int price;
   final String specialRequirements;
+  final double? latitude;
+  final double? longitude;
 
   BookingProposalModel({
     required this.bookingId,
@@ -13,6 +15,8 @@ class BookingProposalModel {
     required this.time,
     required this.price,
     required this.specialRequirements,
+    this.latitude,
+    this.longitude,
   });
 
   factory BookingProposalModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +27,8 @@ class BookingProposalModel {
       time: json['time'] ?? '',
       price: json['price'] ?? 0,
       specialRequirements: json['specialRequirements'] ?? '',
+      latitude: json['latitude']?.toDouble(),
+      longitude: json['longitude']?.toDouble(),
     );
   }
 
@@ -34,6 +40,8 @@ class BookingProposalModel {
       'time': time,
       'price': price,
       'specialRequirements': specialRequirements,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 }

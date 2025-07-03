@@ -1,75 +1,46 @@
-import 'package:driver/models/base_model.dart';
-
-class BookingModel implements BaseModel {
-  final String id;
-  final Location location;
-  final User user;
-  final String? serviceProviderId;
+class BookingModel {
+  final String bookingId;
+  final String customerName;
   final int hours;
   final String date;
-  final int price;
-  final String specialRequirements;
-  final String status;
+  final String time;
+  final double price;
+  final Location location;
   final String locationName;
-  final List<dynamic> proposals;
-  final String? acceptedProposalId;
-  final List<dynamic> messages;
-  final String createdAt;
+  final String? assignedDriver;
+  final String? driverPermitNumber;
+  final Proposal? myProposal;
 
   BookingModel({
-    required this.id,
-    required this.location,
-    required this.user,
-    this.serviceProviderId,
+    required this.bookingId,
+    required this.customerName,
     required this.hours,
     required this.date,
+    required this.time,
     required this.price,
-    required this.specialRequirements,
-    required this.status,
+    required this.location,
     required this.locationName,
-    required this.proposals,
-    this.acceptedProposalId,
-    required this.messages,
-    required this.createdAt,
+    this.assignedDriver,
+    this.driverPermitNumber,
+    this.myProposal,
   });
 
   factory BookingModel.fromJson(Map<String, dynamic> json) {
     return BookingModel(
-      id: json['_id'],
-      location: Location.fromJson(json['location']),
-      user: User.fromJson(json['userId']),
-      serviceProviderId: json['serviceProviderId'],
+      bookingId: json['bookingId'],
+      customerName: json['customerName'],
       hours: json['hours'],
       date: json['date'],
-      price: json['price'],
-      specialRequirements: json['specialRequirements'],
-      status: json['status'],
+      time: json['time'],
+      price: (json['price'] as num).toDouble(),
+      location: Location.fromJson(json['location']),
       locationName: json['locationName'],
-      proposals: json['proposals'] ?? [],
-      acceptedProposalId: json['acceptedProposalId'],
-      messages: json['messages'] ?? [],
-      createdAt: json['createdAt'],
+      assignedDriver: json['assignedDriver'],
+      driverPermitNumber: json['driverPermitNumber'],
+      myProposal: json['myProposal'] != null
+          ? Proposal.fromJson(json['myProposal'])
+          : null,
     );
-  }
-
-  @override
-  Map<String, dynamic> toMap() {
-    return {
-      '_id': id,
-      'location': location.toMap(),
-      'userId': user.toMap(),
-      'serviceProviderId': serviceProviderId,
-      'hours': hours,
-      'date': date,
-      'price': price,
-      'specialRequirements': specialRequirements,
-      'status': status,
-      'locationName': locationName,
-      'proposals': proposals,
-      'acceptedProposalId': acceptedProposalId,
-      'messages': messages,
-      'createdAt': createdAt,
-    };
   }
 }
 class Location {
@@ -84,41 +55,70 @@ class Location {
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
       type: json['type'],
-      coordinates: List<double>.from(json['coordinates'].map((x) => x.toDouble())),
+      coordinates:
+      List<double>.from(json['coordinates'].map((x) => x.toDouble())),
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'type': type,
-      'coordinates': coordinates,
-    };
   }
 }
-class User {
+class Proposal {
   final String id;
-  final String fullName;
-  final String contactNumber;
+  final String serviceProviderId;
+  final int hours;
+  final double price;
+  final String date;
+  final String time;
+  final String specialRequirements;
+  final String status;
+  final CurrentLocation? currentLocation;
+  final String submittedAt;
 
-  User({
+  Proposal({
     required this.id,
-    required this.fullName,
-    required this.contactNumber,
+    required this.serviceProviderId,
+    required this.hours,
+    required this.price,
+    required this.date,
+    required this.time,
+    required this.specialRequirements,
+    required this.status,
+    required this.submittedAt,
+    this.currentLocation,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+  factory Proposal.fromJson(Map<String, dynamic> json) {
+    return Proposal(
       id: json['_id'],
-      fullName: json['fullName'],
-      contactNumber: json['contactNumber'],
+      serviceProviderId: json['serviceProviderId'],
+      hours: json['hours'],
+      price: (json['price'] as num).toDouble(),
+      date: json['date'],
+      time: json['time'],
+      specialRequirements: json['specialRequirements'],
+      status: json['status'],
+      submittedAt: json['submittedAt'],
+      currentLocation: json['currentLocation'] != null
+          ? CurrentLocation.fromJson(json['currentLocation'])
+          : null,
     );
   }
+}
+class CurrentLocation {
+  final String type;
+  final List<double> coordinates;
+  final String capturedAt;
 
-  Map<String, dynamic> toMap() {
-    return {
-      '_id': id,
-      'fullName': fullName,
-      'contactNumber': contactNumber,
-    };
+  CurrentLocation({
+    required this.type,
+    required this.coordinates,
+    required this.capturedAt,
+  });
+
+  factory CurrentLocation.fromJson(Map<String, dynamic> json) {
+    return CurrentLocation(
+      type: json['type'],
+      coordinates:
+      List<double>.from(json['coordinates'].map((x) => x.toDouble())),
+      capturedAt: json['capturedAt'],
+    );
   }
 }

@@ -30,10 +30,9 @@ List<BlocProvider> getAppBlocProvider() {
     BlocProvider<LocationBloc>(
       create:
           (_) =>
-              LocationBloc(LocationRepository(), CurrentLocationRepository())
-                ..add(RequestEnableLocation()),
+              LocationBloc(LocationRepository(), CurrentLocationRepository()),
     ),
-    BlocProvider<HomeBloc>(create: (_) => HomeBloc()..add(HomeLoadedEvent())),
+    BlocProvider<HomeBloc>(create: (_) => HomeBloc()),
     BlocProvider<ChatUserBloc>(
       create: (_) => ChatUserBloc()..add(ChatUserLoadedEvent()),
     ),

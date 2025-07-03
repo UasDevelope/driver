@@ -1,15 +1,10 @@
 import 'package:driver/screens/home/drawer.dart';
-import 'package:driver/screens/order/completed_order.dart';
-import 'package:driver/screens/order/in_progress_order.dart';
 import 'package:driver/utils/const/app_img.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../api/api_const.dart';
 import '../../utils/const/app_color.dart';
 import '../../utils/const/app_string.dart';
-import '../home/home.dart';
-import 'pending_order.dart';
+import 'orders_screen.dart';
 
 class TabarScreen extends StatelessWidget {
   const TabarScreen({super.key});
@@ -17,7 +12,7 @@ class TabarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 5,
       child: Scaffold(
         drawer:CustomDrawer(userName: "userName", profileImage: AppImages.profile),
         backgroundColor: Colors.white,
@@ -43,7 +38,7 @@ class TabarScreen extends StatelessWidget {
           ),
           title: Text("👋 Welcome back, Frank!"),
           bottom: TabBar(
-            isScrollable: false,
+            isScrollable: true,
             labelColor: AppColor.appColor,
             automaticIndicatorColorAdjustment: true,
             indicatorColor: AppColor.blue,
@@ -53,6 +48,8 @@ class TabarScreen extends StatelessWidget {
             dividerColor: Colors.white,
             tabs: [
               Tab(text: AppStrings.statusPending),
+              Tab(text: AppStrings.statusSubmitted),
+              Tab(text: AppStrings.statusRejected),
               Tab(text: AppStrings.statusInProgress),
               Tab(text: AppStrings.statusCompleted),
             ],
@@ -60,9 +57,11 @@ class TabarScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            PendingOrdersScreen(),
-            InProgressOrdersScreen(),
-            CompletedOrdersScreen(),
+            OrdersScreen(endPoint: ApiConstants.pendingBookings,isPending: true,),
+            OrdersScreen(endPoint: ApiConstants.submittedBookings,isPending: false,),
+            OrdersScreen(endPoint: ApiConstants.rejectedBookings,isPending: false,),
+            OrdersScreen(endPoint: ApiConstants.inProgressBookings,isPending: false),
+            OrdersScreen(endPoint: ApiConstants.completedBookings,isPending: false),
           ],
         ),
       ),

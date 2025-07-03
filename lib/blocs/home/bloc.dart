@@ -27,7 +27,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(HomeLoadingState());
 
     try {
-      List<OrdersModel> orders = await ordersRepo.getBookings(ApiConstants.pendingBookings);
+      List<OrdersModel> orders = await ordersRepo.getBookings(ApiConstants.inProgressBookings);
 
       final Set<Polyline> polyLines = {};
       final Set<Marker> marker = {};
@@ -107,7 +107,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     final result = await polylinePoints.getRouteBetweenCoordinates(
       googleApiKey:
-          'AIzaSyCyyqHImZfYyt09rya-6YcD9wsTWbP0fsE', // Replace with env var in prod
+          'AIzaSyCyyqHImZfYyt09rya-6YcD9wsTWbP0fsE',
       request: request,
     );
 

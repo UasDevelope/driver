@@ -60,6 +60,8 @@ class AppStrings {
   static const String welcomeMessage = "👋 Welcome back, {name}!";
   static const String statusNew = "New";
   static const String statusPending = "Pending";
+  static const String statusSubmitted = "Submitted";
+  static const String statusRejected = "Rejected";
   static const String statusInProgress = "In Progress";
   static const String statusCompleted = "Completed";
 

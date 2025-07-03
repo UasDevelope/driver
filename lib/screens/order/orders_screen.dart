@@ -1,24 +1,21 @@
 import 'package:driver/api/api_const.dart';
 import 'package:driver/blocs/order/bloc.dart';
 import 'package:driver/blocs/order/state.dart';
-import 'package:driver/models/order.dart';
 import 'package:driver/screens/home/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/order/event.dart';
-import '../../utils/const/app_color.dart';
 import '../../utils/const/app_img.dart';
-import '../../utils/const/app_string.dart';
-import '../../widgets/app_text.dart';
-import '../../widgets/custom_button.dart';
 import 'booking_card.dart';
 
-class InProgressOrdersScreen extends StatelessWidget {
-  const InProgressOrdersScreen({super.key});
+class OrdersScreen extends StatelessWidget {
+  final String endPoint;
+  final bool isPending;
+  const OrdersScreen({super.key, required this.endPoint, required this.isPending});
 
   @override
   Widget build(BuildContext context) {
-    context.read<OrderBloc>().add(OrderLoadedEvent(ApiConstants.inProgressBookings));
+    context.read<OrderBloc>().add(OrderLoadedEvent(endPoint));
     return Scaffold(
         drawer:CustomDrawer(userName: "Usama", profileImage: AppImages.profile),
         backgroundColor: Colors.white, body: _body());
@@ -36,7 +33,7 @@ class InProgressOrdersScreen extends StatelessWidget {
             itemCount: state.bookings.length,
             itemBuilder: (context, index) {
               final item = state.bookings[index];
-              return BookingCard(item: item,);
+              return BookingCard(item: item,isPending: isPending);
             },
           );
         }
@@ -44,4 +41,5 @@ class InProgressOrdersScreen extends StatelessWidget {
       },
     );
   }
+
 }

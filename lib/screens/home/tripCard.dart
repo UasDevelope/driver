@@ -135,7 +135,9 @@ class TripCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AppText(
-                              text: "${state.country} ${state.city}" ?? "Start Address",
+                              text:
+                                  "${state.country} ${state.city}" ??
+                                  "Start Address",
                               fontWeight: FontWeight.bold,
                             ),
                             AppText(
@@ -145,9 +147,7 @@ class TripCard extends StatelessWidget {
                             ),
                             SizedBox(height: 12),
                             AppText(
-                              text:
-                              data.locationName ??
-                                  "End Address",
+                              text: data.locationName ?? "End Address",
                               fontWeight: FontWeight.bold,
                             ),
                             AppText(
@@ -221,7 +221,8 @@ class TripCard extends StatelessWidget {
                       SizedBox(
                         width: 100,
                         child: AppText(
-                          text: 'ID: ${data.bookingId?.substring(data.bookingId!.length - 5) ?? 'Unknown'}',
+                          text:
+                              'ID: ${data.bookingId?.substring(data.bookingId!.length - 5) ?? 'Unknown'}',
                           color: Colors.grey,
                           fontWeight: FontWeight.w400,
                           overflow: TextOverflow.ellipsis,
@@ -240,25 +241,30 @@ class TripCard extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: AppButton(
-                backgroundColor: AppColor.appColor,
-                width: 200,
-                text: "Send Proposal",
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              ProposalScreen(bookingId: data.bookingId, noOfHours: data.hours!,dateTime: data.date!,price: data.price!,time: data.time!,),
-                    ),
-                  );
-                },
-              ),
-            ),
+            // SizedBox(height: 10),
+            // SizedBox(
+            //   width: double.infinity,
+            //   child: AppButton(
+            //     backgroundColor: AppColor.appColor,
+            //     width: 200,
+            //     text: "Send Proposal",
+            //     onPressed: () {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder:
+            //               (context) => ProposalScreen(
+            //                 bookingId: data.bookingId,
+            //                 noOfHours: data.hours!,
+            //                 dateTime: data.date!,
+            //                 price: data.price!,
+            //                 time: data.time!,
+            //               ),
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),

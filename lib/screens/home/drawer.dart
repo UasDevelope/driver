@@ -83,6 +83,9 @@ class CustomDrawer extends StatelessWidget {
               return SizedBox.shrink();
             },
           ),
+          _buildDrawerItem(AppImages.clock, "Home", () {
+            Navigator.pushNamed(context, AppRoutes.home);
+          }),
           _buildDrawerItem(AppImages.clock, "Recent Orders", () {
             Navigator.pushNamed(context, AppRoutes.order);
           }),
@@ -112,7 +115,12 @@ class CustomDrawer extends StatelessWidget {
             ),
             onTap: () async {
               await LocalStorage.storeString(LocalStorage.AcessToken, '');
-              Navigator.pushReplacementNamed(context, AppRoutes.login);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                AppRoutes.login,
+                    (route) => false,
+              );
+
             },
           ),
           SizedBox(height: 20),

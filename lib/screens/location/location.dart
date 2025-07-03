@@ -10,16 +10,13 @@ import '../../utils/const/app_string.dart';
 import '../../widgets/app_text.dart';
 import '../../widgets/custom_button.dart';
 
-
 class LocationScreen extends StatelessWidget {
   const LocationScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.white, body: _body());
+    return Scaffold(backgroundColor: Colors.white, body: _body(context));
   }
-
-  Widget _body() {
+  Widget _body(BuildContext context) {
     return BlocListener<LocationBloc, LocationState>(
       listener: (context, state) {
         if (state is LocationSucessState) {

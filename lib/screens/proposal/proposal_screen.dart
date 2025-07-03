@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../blocs/propsal/propsal_event.dart';
+import '../../repositories/CurrentLocationRepository.dart';
 import '../../services/dateTime.dart';
 import '../../utils/const/app_color.dart';
 import '../../utils/const/app_img.dart';
@@ -148,22 +149,36 @@ class ProposalScreen extends StatelessWidget {
                           /// Submit
                           AppButton(
                             text: "Send Proposal",
-                            onPressed: () {
-                              final proposal = BookingProposalModel(
-                                bookingId: bookingId!,
-                                hours:
-                                    int.tryParse(proposalBloc.Nohrs.text) ?? 0,
-                                date: proposalBloc.date.text,
-                                time: proposalBloc.time.text,
-                                price:
-                                    int.tryParse(proposalBloc.price.text) ?? 0,
-                                specialRequirements:
-                                    proposalBloc.writeSomething.text,
-                              );
-
-                              context.read<ProposalBloc>().add(
-                                SubmitProposalEvent(proposalModel: proposal),
-                              );
+                            onPressed: () async {
+                              try {
+                                final locationRepo = CurrentLocationRepository();
+                                final (lat, long, _) = await locationRepo
+                                    .getCurrentLocation();
+                                print("Latitude: $lat");
+                                print("Longitude: $long");
+                                final proposal = BookingProposalModel(
+                                  bookingId: bookingId!,
+                                  hours: int.tryParse(
+                                      proposalBloc.Nohrs.text) ?? 0,
+                                  date: proposalBloc.date.text,
+                                  time: proposalBloc.time.text,
+                                  price: int.tryParse(
+                                      proposalBloc.price.text) ?? 0,
+                                  specialRequirements: proposalBloc
+                                      .writeSomething.text ?? "",
+                                  latitude: lat,
+                                  longitude: long,
+                                );
+                                context.read<ProposalBloc>().add(
+                                  SubmitProposalEvent(proposalModel: proposal),
+                                );
+                              } catch (e) {
+                                print("Location error: $e");
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text("Failed to get location")),
+                                );
+                              }
                             },
                             backgroundColor: AppColor.appColor,
                           ),

@@ -34,7 +34,7 @@ class Loginsucess extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
 
-             SizedBox(height: 12),
+            SizedBox(height: 12),
 
             AppText(
               text: AppStrings.loginSuccessMessage,
@@ -42,14 +42,14 @@ class Loginsucess extends StatelessWidget {
               color: AppColor.light_grey,
               fontSize: 16,
             ),
-             SizedBox(height: 80),
+            SizedBox(height: 80),
             AppButton(
               borderRadius: 10,
               backgroundColor: AppColor.appColor,
               text: AppStrings.letsExplore,
               onPressed: () {
                 Navigator.pushNamed(context, AppRoutes.home);
-               // Navigator.pushNamed(context, AppRoutes.location);
+                // Navigator.pushNamed(context, AppRoutes.location);
               },
             ),
           ],

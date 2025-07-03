@@ -4,15 +4,19 @@ import '../../models/order.dart';
 import '../../utils/const/app_color.dart';
 import '../../utils/const/app_img.dart';
 import '../../widgets/app_text.dart';
+import '../../widgets/custom_button.dart';
+import '../proposal/proposal_screen.dart';
 
 class BookingCard extends StatelessWidget {
   final OrdersModel item;
   final VoidCallback? onPaymentPressed;
+  final bool isPending;
 
   const BookingCard({
     super.key,
     required this.item,
     this.onPaymentPressed,
+    this.isPending = false,
   });
 
   @override
@@ -101,9 +105,7 @@ class BookingCard extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 6),
-
             Row(
               children: [
                 Image.asset(
@@ -122,9 +124,7 @@ class BookingCard extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 6),
-
             Row(
               children: [
                 Image.asset(
@@ -182,6 +182,30 @@ class BookingCard extends StatelessWidget {
             //     onPressed: onPaymentPressed ?? () {},
             //   ),
             // ),
+          isPending?  SizedBox(height: 10):SizedBox.shrink(),
+           isPending? SizedBox(
+              width: double.infinity,
+              child: AppButton(
+                backgroundColor: AppColor.appColor,
+                width: 200,
+                text: "Send Proposal",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => ProposalScreen(
+                        bookingId: item.bookingId,
+                        noOfHours: item.hours!,
+                        dateTime: item.date!,
+                        price: item.price!,
+                        time: item.time!,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ):SizedBox.shrink(),
           ],
         ),
       ),
