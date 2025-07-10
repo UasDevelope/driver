@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../../models/order.dart';
 import '../../utils/const/app_color.dart';
 import '../../utils/const/app_img.dart';
 import '../../widgets/app_text.dart';
 import '../../widgets/custom_button.dart';
+import '../chat/inbox.dart';
 import '../proposal/proposal_screen.dart';
 
 class BookingCard extends StatelessWidget {
@@ -35,7 +37,8 @@ class BookingCard extends StatelessWidget {
                   radius: 24,
                   backgroundColor: AppColor.appColor,
                   child: AppText(
-                    text:item.customerName?.substring(0, 1).toUpperCase() ?? '?',
+                    text:
+                        item.customerName?.substring(0, 1).toUpperCase() ?? '?',
                     fontSize: 21,
                     fontWeight: FontWeight.w700,
                     color: AppColor.white,
@@ -46,7 +49,7 @@ class BookingCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width* 0.65,
+                      width: MediaQuery.of(context).size.width * 0.65,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -97,7 +100,7 @@ class BookingCard extends StatelessWidget {
                 Expanded(
                   child: AppText(
                     text:
-                    "Driving Permit Number: ${item.driverPermitNumber ?? "-"}",
+                        "Driving Permit Number: ${item.driverPermitNumber ?? "-"}",
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
                     color: AppColor.black,
@@ -182,30 +185,50 @@ class BookingCard extends StatelessWidget {
             //     onPressed: onPaymentPressed ?? () {},
             //   ),
             // ),
-          isPending?  SizedBox(height: 10):SizedBox.shrink(),
-           isPending? SizedBox(
+            isPending ? SizedBox(height: 10) : SizedBox.shrink(),
+            isPending
+                ? SizedBox(
+                    width: double.infinity,
+                    child: AppButton(
+                      backgroundColor: AppColor.appColor,
+                      width: 200,
+                      text: "Send Proposal",
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProposalScreen(
+                              bookingId: item.bookingId,
+                              noOfHours: item.hours!,
+                              dateTime: item.date!,
+                              price: item.price!,
+                              time: item.time!,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                : SizedBox.shrink(),
+            // Add Chat button for in progress orders
+            SizedBox(
               width: double.infinity,
               child: AppButton(
-                backgroundColor: AppColor.appColor,
+                backgroundColor: AppColor.blue,
                 width: 200,
-                text: "Send Proposal",
+                text: "Chat",
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder:
-                          (context) => ProposalScreen(
-                        bookingId: item.bookingId,
-                        noOfHours: item.hours!,
-                        dateTime: item.date!,
-                        price: item.price!,
-                        time: item.time!,
-                      ),
+                      builder: (context) => ChatInbox(
+                          bookingId:
+                              item.bookingId!), // Pass bookingId if needed
                     ),
                   );
                 },
               ),
-            ):SizedBox.shrink(),
+            ),
           ],
         ),
       ),

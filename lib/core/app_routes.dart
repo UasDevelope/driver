@@ -3,18 +3,17 @@ import 'package:driver/screens/earning/earning.dart';
 import 'package:driver/screens/help/help.dart';
 import 'package:driver/screens/home/home.dart';
 import 'package:driver/screens/message/messag.dart';
-import 'package:driver/screens/proposal/proposal_screen.dart';
 import 'package:flutter/material.dart';
+
 import '../screens/auth/loginSucess.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/signUp.dart';
 import '../screens/chat/chat.dart';
 import '../screens/chat/inbox.dart';
 import '../screens/location/location.dart';
-import '../screens/order_detail/order_detail_screen.dart';
+import '../screens/order/tabar.dart';
 import '../screens/review_screen/review_screen.dart';
 import '../screens/splash/splash.dart';
-import '../screens/order/tabar.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -58,19 +57,21 @@ class AppRoutes {
       case help:
         return MaterialPageRoute(builder: (_) => HelpScreen());
       case chatInbox:
-        return MaterialPageRoute(builder: (_) => ChatInbox());
+        return MaterialPageRoute(
+            builder: (_) => ChatInbox(
+                  bookingId: '',
+                ));
       case forget:
         return MaterialPageRoute(builder: (_) => ForgetPasswordScreen());
       case message:
         return MaterialPageRoute(builder: (_) => ChatUsers());
       default:
         return MaterialPageRoute(
-          builder:
-              (_) => Scaffold(
-                body: Center(
-                  child: Text("No route defined for ${setting.name}"),
-                ),
-              ),
+          builder: (_) => Scaffold(
+            body: Center(
+              child: Text("No route defined for ${setting.name}"),
+            ),
+          ),
         );
     }
   }

@@ -20,3 +20,9 @@ class ChatInboxLoadedState extends ChatInboxState {
   const ChatInboxLoadedState({required this.chatInbox});
   List<Object> get props => [chatInbox];
 }
+class ChatInboxErrorState extends ChatInboxState {
+  final dynamic error;
+  const ChatInboxErrorState({required this.error});
+  @override
+  List<Object> get props => [error];
+}

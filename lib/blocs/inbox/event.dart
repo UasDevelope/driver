@@ -14,6 +14,29 @@ class ChatLoadedEvent extends ChatInboxEvent {
 class SendChatMessageEvent extends ChatInboxEvent {
   final String message;
   final String senderId;
-  const SendChatMessageEvent({required this.senderId, required this.message});
-  List<Object> get props => [message, senderId];
+  final String bookingId;
+  const SendChatMessageEvent({required this.senderId, required this.message, required this.bookingId});
+  @override
+  List<Object> get props => [message, senderId, bookingId];
+}
+
+class JoinChatRoomEvent extends ChatInboxEvent {
+  final String bookingId;
+  const JoinChatRoomEvent({required this.bookingId});
+  @override
+  List<Object> get props => [bookingId];
+}
+
+class ChatMessageReceivedEvent extends ChatInboxEvent {
+  final Map<String, dynamic> data;
+  const ChatMessageReceivedEvent({required this.data});
+  @override
+  List<Object> get props => [data];
+}
+
+class ChatSocketErrorEvent extends ChatInboxEvent {
+  final dynamic error;
+  const ChatSocketErrorEvent({required this.error});
+  @override
+  List<Object> get props => [error];
 }

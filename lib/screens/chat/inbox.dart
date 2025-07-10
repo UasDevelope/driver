@@ -11,12 +11,15 @@ import '../../widgets/app_text.dart';
 import '../../widgets/form_field.dart';
 
 class ChatInbox extends StatelessWidget {
+  final String bookingId;
   final TextEditingController _controller = TextEditingController();
 
-  ChatInbox({super.key});
+  ChatInbox({super.key, required this.bookingId});
 
   @override
   Widget build(BuildContext context) {
+    // Join chat room on screen open
+    context.read<ChatInboxBloc>().add(JoinChatRoomEvent(bookingId: bookingId));
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -132,6 +135,7 @@ class ChatInbox extends StatelessWidget {
                               SendChatMessageEvent(
                                 senderId: "user_2",
                                 message: _controller.text.trim(),
+                                bookingId: bookingId,
                               ),
                             );
                             _controller.clear();
