@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:driver/blocs/inbox/state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
-import '../../dummy/chat_inbox.dart';
+import '../../api/api_const.dart';
+import '../../api/base_api_client.dart';
 import '../../models/chat_inbox.dart';
 import '../../services/socket_service.dart';
 import 'event.dart';
@@ -11,6 +13,8 @@ import 'event.dart';
 class ChatInboxBloc extends Bloc<ChatInboxEvent, ChatInboxState> {
   List<ChatInboxModel> _chatList = []; // store messages here
   final SocketService _socketService = SocketService();
+  final String _currentUserId =
+      "686f5ef01828bb73b6084c40"; // Hardcoded current user ID as requested
 
   ChatInboxBloc() : super(ChatInboxInitialState()) {
     on<ChatLoadedEvent>(_onLoadChat);
@@ -20,14 +24,35 @@ class ChatInboxBloc extends Bloc<ChatInboxEvent, ChatInboxState> {
     on<ChatSocketErrorEvent>(_onSocketError);
   }
 
-  void _onLoadChat(ChatLoadedEvent event, Emitter<ChatInboxState> emit) {
+  Future<void> _onLoadChat(
+      ChatLoadedEvent event, Emitter<ChatInboxState> emit) async {
     emit(ChatInboxLoadingState());
     try {
-      final chatInboxData = ChatInboxData();
-      _chatList = chatInboxData.chatInbox
-          .map((e) => ChatInboxModel.fromMap(e))
-          .toList();
-      emit(ChatInboxLoadedState(chatInbox: List.from(_chatList)));
+      // Start with empty list for real-time chat
+      _chatList = [];
+      final BaseApiClient apiClient = GetIt.instance<BaseApiClient>();
+      var response = await apiClient
+          .get("${ApiConstants.getChatHistory}/${event.bookingId}");
+      log("Response for the chat is $response");
+
+      if (response != null && response['messages'] != null) {
+        final List<dynamic> messagesJson = response['messages'];
+
+        _chatList = messagesJson.map((msg) {
+          final bool isMe = msg['senderId'] == _currentUserId;
+          log("Message senderId: ${msg['senderId']},current userId $_currentUserId isMe: $isMe");
+
+          return ChatInboxModel.fromMap(
+            {
+              ...msg,
+              'userId': msg['senderId'],
+              'isMe': isMe,
+            },
+          );
+        }).toList();
+
+        emit(ChatInboxLoadedState(chatInbox: List.from(_chatList)));
+      }
     } catch (e) {
       log("Error loading chat: $e");
     }
@@ -37,16 +62,25 @@ class ChatInboxBloc extends Bloc<ChatInboxEvent, ChatInboxState> {
     SendChatMessageEvent event,
     Emitter<ChatInboxState> emit,
   ) {
-    final newMessage = ChatInboxModel(
-      message: event.message,
-      senderId: event.senderId,
-      recievrId: "receiver_123", // can adjust logic later
-      time: DateTime.now(),
-      url: "",
-      isMe: true,
-    );
-    _chatList.add(newMessage);
+    // // Create a temporary message for immediate UI feedback
+    // final tempMessage = ChatInboxModel(
+    //   id: DateTime.now().millisecondsSinceEpoch.toString(), // Temporary ID
+    //   message: event.message,
+    //   senderId: _currentUserId,
+    //   recievrId: "", // Will be set by server
+    //   time: DateTime.now(),
+    //   url: "",
+    //   isMe: true,
+    //   senderName: "You", // Will be replaced by server response
+    //   senderRole: "driver",
+    //   status: "sending",
+    //   bookingId: event.bookingId,
+    // );
+    //
+    // // Add to list and emit state
+    // _chatList.add(tempMessage);
     emit(ChatInboxLoadedState(chatInbox: List.from(_chatList)));
+
     // Emit socket event with actual bookingId
     _socketService.emit('chatMessage', {
       'bookingId': event.bookingId,
@@ -59,16 +93,21 @@ class ChatInboxBloc extends Bloc<ChatInboxEvent, ChatInboxState> {
     Emitter<ChatInboxState> emit,
   ) async {
     await _socketService.initSocket();
-    _socketService.emit('joinRoom', {'bookingId': event.bookingId});
+    await _socketService
+        .ensureConnectedAndEmit('joinRoom', {'bookingId': event.bookingId});
+
     // Listen for chat messages
     await _socketService.on('chatMessage', (data) {
       log('Socket message received: $data');
-      // For now, just print. In future, dispatch ChatMessageReceivedEvent.
+
+      // Dispatch event instead of directly emitting state
+      add(ChatMessageReceivedEvent(data: data));
     });
+
     // Listen for errors
     await _socketService.on('error', (err) {
       log('Socket error: $err');
-      // For now, just print. In future, dispatch ChatSocketErrorEvent.
+      add(ChatSocketErrorEvent(error: err));
     });
   }
 
@@ -76,9 +115,28 @@ class ChatInboxBloc extends Bloc<ChatInboxEvent, ChatInboxState> {
     ChatMessageReceivedEvent event,
     Emitter<ChatInboxState> emit,
   ) {
-    // For now, just print the message
-    log('Received message: ${event.data}');
-    // In future, add to _chatList and emit loaded state
+    final data = event.data;
+
+    // Check if message already exists to prevent duplicates
+    final messageId = data['_id'];
+    final existingMessage = _chatList.any((msg) => msg.id == messageId);
+
+    if (!existingMessage) {
+      // Create message from socket data
+      final newMessage = ChatInboxModel.fromSocketData(data, _currentUserId);
+
+      // Remove temporary message if it exists (same content, different ID)
+      _chatList.removeWhere((msg) =>
+          msg.id?.startsWith('temp_') == true &&
+          msg.message == newMessage.message &&
+          msg.isMe == newMessage.isMe);
+
+      // Add new message
+      _chatList.add(newMessage);
+
+      // Emit updated state
+      emit(ChatInboxLoadedState(chatInbox: List.from(_chatList)));
+    }
   }
 
   void _onSocketError(

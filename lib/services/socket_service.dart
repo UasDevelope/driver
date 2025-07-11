@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:driver/services/local.dart';
@@ -9,8 +10,8 @@ class SocketService {
   late IO.Socket _socket;
   bool _isConnected = false;
 
-  /// Initialize the socket with optional auth
-  Future<void> initSocket() async {
+  /// Initialize the socket with retry logic
+  Future<void> initSocket({int maxAttempts = 10}) async {
     try {
       final token = await LocalStorage.getString(LocalStorage.AcessToken);
 
@@ -27,11 +28,13 @@ class SocketService {
         },
       );
 
-      _socket.connect();
+      int attempt = 0;
+      final completer = Completer<void>();
 
       _socket.onConnect((_) {
         _isConnected = true;
-        log('✅ Socket connected');
+        log('✅ Socket connected on attempt ${attempt + 1}');
+        if (!completer.isCompleted) completer.complete();
       });
 
       _socket.onDisconnect((_) {
@@ -40,17 +43,32 @@ class SocketService {
       });
 
       _socket.onConnectError((err) {
-        log('⚠️ Connect error: $err');
         _isConnected = false;
+        log('⚠️ Connect error: $err');
       });
 
       _socket.onError((err) {
-        log('🔥 Socket error: $err');
         _isConnected = false;
+        log('🔥 Socket error: $err');
       });
 
-      // Wait a bit for connection to establish
-      await Future.delayed(Duration(milliseconds: 500));
+      while (!_isConnected && attempt < maxAttempts) {
+        attempt++;
+        log('🔁 Attempt $attempt to connect socket...');
+        _socket.connect();
+        await Future.delayed(const Duration(milliseconds: 800));
+
+        if (_isConnected) break;
+      }
+
+      if (!_isConnected && !completer.isCompleted) {
+        log('❌ Socket failed to connect after $maxAttempts attempts.');
+        completer.completeError(
+          'Socket failed to connect after $maxAttempts attempts.',
+        );
+      }
+
+      await completer.future;
     } catch (e) {
       log('❌ Error in initSocket: $e');
       _isConnected = false;
@@ -65,10 +83,7 @@ class SocketService {
         log('📤 Emitting event [$event] with data: $data');
         _socket.emit(event, data);
       } else {
-        log('⚠️ Cannot emit [$event] — socket not connected or not initialized');
-        // Try to connect and emit
-        _socket.connect();
-        _socket.emit(event, data);
+        log('⚠️ Cannot emit [$event] — socket not connected');
       }
     } catch (e) {
       log('❌ Error in emit: $e');
@@ -78,7 +93,7 @@ class SocketService {
   /// Listen to an event
   Future<void> on(String event, Function(dynamic) callback) async {
     _socket.off(event);
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
     _socket.on(event, (data) {
       log('📥 Received event [$event]: $data');
       callback(data);
@@ -93,36 +108,41 @@ class SocketService {
     }
   }
 
-  /// Check connection status
+  /// Check if socket is connected
   bool get isConnected => _isConnected;
 
-  /// Check if socket is ready for operations
+  /// Check if socket is ready
   bool get isReady => _socket != null && _isConnected;
 
-  /// Ensure connection and emit
-  void ensureConnectedAndEmit(String event, dynamic data) {
+  /// Ensure socket is connected and emit an event
+  Future<void> ensureConnectedAndEmit(String event, dynamic data) async {
     try {
-      if (_socket == null) {
-        log('❌ Socket not initialized, cannot emit [$event]');
-        return;
+      if (_socket == null || !_isConnected) {
+        log('⚠️ Socket not ready. Trying to re-initialize...');
+        await initSocket();
       }
 
-      if (!_isConnected) {
-        log('🔄 Reconnecting socket...');
-        _socket.connect();
-        // Give it a moment to connect
-        Future.delayed(Duration(milliseconds: 100), () {
-          if (_socket != null) {
-            log('📤 Emitting event [$event] with data: $data');
-            _socket.emit(event, data);
-          }
-        });
-      } else {
+      if (_isConnected) {
         log('📤 Emitting event [$event] with data: $data');
         _socket.emit(event, data);
+      } else {
+        log('❌ Still not connected. Cannot emit [$event]');
       }
     } catch (e) {
       log('❌ Error in ensureConnectedAndEmit: $e');
+    }
+  }
+
+  /// Wait until socket is ready (connected) or timeout
+  Future<void> waitUntilReady({int timeoutMs = 5000}) async {
+    int waited = 0;
+    while (!_isConnected && waited < timeoutMs) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      waited += 200;
+    }
+
+    if (!_isConnected) {
+      throw Exception('Socket not ready after waiting $timeoutMs ms');
     }
   }
 }

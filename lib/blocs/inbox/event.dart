@@ -8,16 +8,18 @@ abstract class ChatInboxEvent extends Equatable {
 }
 
 class ChatLoadedEvent extends ChatInboxEvent {
-  const ChatLoadedEvent();
+  final String bookingId;
+  const ChatLoadedEvent({required this.bookingId});
 }
 
 class SendChatMessageEvent extends ChatInboxEvent {
   final String message;
-  final String senderId;
+  final String? senderId;
   final String bookingId;
-  const SendChatMessageEvent({required this.senderId, required this.message, required this.bookingId});
+  const SendChatMessageEvent(
+      {this.senderId, required this.message, required this.bookingId});
   @override
-  List<Object> get props => [message, senderId, bookingId];
+  List<Object> get props => [message, senderId ?? "", bookingId];
 }
 
 class JoinChatRoomEvent extends ChatInboxEvent {

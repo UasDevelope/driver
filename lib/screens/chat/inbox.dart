@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,16 +9,40 @@ import '../../utils/const/app_img.dart';
 import '../../widgets/app_text.dart';
 import '../../widgets/form_field.dart';
 
-class ChatInbox extends StatelessWidget {
+class ChatInbox extends StatefulWidget {
   final String bookingId;
-  final TextEditingController _controller = TextEditingController();
+  const ChatInbox({super.key, required this.bookingId});
 
-  ChatInbox({super.key, required this.bookingId});
+  @override
+  State<ChatInbox> createState() => _ChatInboxState();
+}
+
+class _ChatInboxState extends State<ChatInbox> {
+  final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Load chat and join room on screen open
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ChatInboxBloc>().add(ChatLoadedEvent(bookingId: widget.bookingId));
+      context.read<ChatInboxBloc>().add(JoinChatRoomEvent(bookingId: widget.bookingId));
+    });
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Join chat room on screen open
-    context.read<ChatInboxBloc>().add(JoinChatRoomEvent(bookingId: bookingId));
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -37,7 +60,7 @@ class ChatInbox extends StatelessWidget {
               radius: 18,
               backgroundImage: AssetImage(
                 AppImages.person1,
-              ), // Replace with your asset or network image
+              ),
             ),
             const SizedBox(width: 10),
             Column(
@@ -45,7 +68,6 @@ class ChatInbox extends StatelessWidget {
               children: const [
                 AppText(
                   text: "Orlando Diggs",
-
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Colors.black,
@@ -53,15 +75,15 @@ class ChatInbox extends StatelessWidget {
                 AppText(text: "Online", fontSize: 12, color: Colors.green),
               ],
             ),
-            // const Spacer(),
-            // Icon(Icons.call_outlined, color: Colors.black),
-            // const SizedBox(width: 16),
-            // Icon(Icons.search, color: Colors.black),
-            // const SizedBox(width: 8),
           ],
         ),
       ),
-      body: BlocBuilder<ChatInboxBloc, ChatInboxState>(
+      body: BlocConsumer<ChatInboxBloc, ChatInboxState>(
+        listener: (context, state) {
+          if (state is ChatInboxLoadedState) {
+            WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+          }
+        },
         builder: (context, state) {
           if (state is ChatInboxLoadingState) {
             return const Center(child: CircularProgressIndicator());
@@ -70,15 +92,15 @@ class ChatInbox extends StatelessWidget {
               children: [
                 Expanded(
                   child: ListView.builder(
+                    controller: _scrollController,
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     itemCount: state.chatInbox.length,
                     itemBuilder: (context, index) {
                       final message = state.chatInbox[index];
                       return Align(
-                        alignment:
-                            message.isMe
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
+                        alignment: message.isMe
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
                         child: Container(
                           padding: const EdgeInsets.all(12),
                           margin: const EdgeInsets.symmetric(
@@ -87,10 +109,9 @@ class ChatInbox extends StatelessWidget {
                           ),
                           constraints: const BoxConstraints(maxWidth: 280),
                           decoration: BoxDecoration(
-                            color:
-                                message.isMe
-                                    ? AppColor.appColor
-                                    : Colors.grey[200],
+                            color: message.isMe
+                                ? AppColor.appColor
+                                : Colors.grey[200],
                             borderRadius: BorderRadius.only(
                               topLeft: const Radius.circular(16),
                               topRight: const Radius.circular(16),
@@ -103,17 +124,15 @@ class ChatInbox extends StatelessWidget {
                             ),
                           ),
                           child: AppText(
-                          text:   message.message,
-                           fontSize: 15,
-                            fontWeight:FontWeight.w400,
-
+                            text: message.message,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       );
                     },
                   ),
                 ),
-                // const Divider(height: 1),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -132,12 +151,12 @@ class ChatInbox extends StatelessWidget {
                         onTap: () {
                           if (_controller.text.trim().isNotEmpty) {
                             context.read<ChatInboxBloc>().add(
-                              SendChatMessageEvent(
-                                senderId: "user_2",
-                                message: _controller.text.trim(),
-                                bookingId: bookingId,
-                              ),
-                            );
+                                  SendChatMessageEvent(
+                                    senderId: "", // Not used
+                                    message: _controller.text.trim(),
+                                    bookingId: widget.bookingId,
+                                  ),
+                                );
                             _controller.clear();
                           }
                         },
@@ -165,5 +184,12 @@ class ChatInbox extends StatelessWidget {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 }
