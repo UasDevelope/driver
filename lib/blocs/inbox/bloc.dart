@@ -7,14 +7,15 @@ import 'package:get_it/get_it.dart';
 import '../../api/api_const.dart';
 import '../../api/base_api_client.dart';
 import '../../models/chat_inbox.dart';
+import '../../services/local.dart';
 import '../../services/socket_service.dart';
+import '../../utils/custom_jwt_decoder.dart';
 import 'event.dart';
 
 class ChatInboxBloc extends Bloc<ChatInboxEvent, ChatInboxState> {
   List<ChatInboxModel> _chatList = []; // store messages here
   final SocketService _socketService = SocketService();
-  final String _currentUserId =
-      "686f5ef01828bb73b6084c40"; // Hardcoded current user ID as requested
+  String _currentUserId = "";
 
   ChatInboxBloc() : super(ChatInboxInitialState()) {
     on<ChatLoadedEvent>(_onLoadChat);
@@ -58,6 +59,18 @@ class ChatInboxBloc extends Bloc<ChatInboxEvent, ChatInboxState> {
     }
   }
 
+  Future<String> _decodeToken() async {
+    final userToken = await LocalStorage.getString(LocalStorage.AcessToken);
+
+    if (userToken != null) {
+      Map<String, dynamic> decodedToken = CustomJwtDecoder.decode(userToken);
+      _currentUserId = decodedToken["id"];
+      log("Current user id is $_currentUserId");
+      return decodedToken["id"];
+    }
+    return "";
+  }
+
   void _onSendMessage(
     SendChatMessageEvent event,
     Emitter<ChatInboxState> emit,
@@ -92,6 +105,7 @@ class ChatInboxBloc extends Bloc<ChatInboxEvent, ChatInboxState> {
     JoinChatRoomEvent event,
     Emitter<ChatInboxState> emit,
   ) async {
+    _decodeToken();
     await _socketService.initSocket();
     await _socketService
         .ensureConnectedAndEmit('joinRoom', {'bookingId': event.bookingId});

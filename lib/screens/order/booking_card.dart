@@ -13,12 +13,14 @@ class BookingCard extends StatelessWidget {
   final OrdersModel item;
   final VoidCallback? onPaymentPressed;
   final bool isPending;
+  final bool isProgress;
 
   const BookingCard({
     super.key,
     required this.item,
     this.onPaymentPressed,
     this.isPending = false,
+    this.isProgress = false,
   });
 
   @override
@@ -210,25 +212,27 @@ class BookingCard extends StatelessWidget {
                     ),
                   )
                 : SizedBox.shrink(),
-            // Add Chat button for in progress orders
-            SizedBox(
-              width: double.infinity,
-              child: AppButton(
-                backgroundColor: AppColor.blue,
-                width: 200,
-                text: "Chat",
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatInbox(
-                          bookingId:
-                              item.bookingId!), // Pass bookingId if needed
+            isProgress ? SizedBox(height: 10) : SizedBox.shrink(),
+            !isProgress
+                ? SizedBox.shrink()
+                : SizedBox(
+                    width: double.infinity,
+                    child: AppButton(
+                      backgroundColor: AppColor.blue,
+                      width: 200,
+                      text: "Chat",
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChatInbox(
+                                bookingId: item
+                                    .bookingId!), // Pass bookingId if needed
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
+                  ),
           ],
         ),
       ),

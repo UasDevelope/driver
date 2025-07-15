@@ -1,6 +1,7 @@
 import 'package:driver/screens/home/drawer.dart';
 import 'package:driver/utils/const/app_img.dart';
 import 'package:flutter/material.dart';
+
 import '../../api/api_const.dart';
 import '../../utils/const/app_color.dart';
 import '../../utils/const/app_string.dart';
@@ -14,14 +15,14 @@ class TabarScreen extends StatelessWidget {
     return DefaultTabController(
       length: 5,
       child: Scaffold(
-        drawer:CustomDrawer(userName: "userName", profileImage: AppImages.profile),
+        drawer:
+            CustomDrawer(userName: "userName", profileImage: AppImages.profile),
         backgroundColor: Colors.white,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
           leading: Builder(
-            builder:
-                (context) => Container(
+            builder: (context) => Container(
               height: 40,
               width: 40,
               decoration: BoxDecoration(
@@ -30,8 +31,7 @@ class TabarScreen extends StatelessWidget {
               ),
               child: IconButton(
                 icon: Icon(Icons.menu),
-                onPressed:
-                    () => Scaffold.of(context).openDrawer(),
+                onPressed: () => Scaffold.of(context).openDrawer(),
                 color: Colors.black,
               ),
             ),
@@ -42,9 +42,10 @@ class TabarScreen extends StatelessWidget {
             labelColor: AppColor.appColor,
             automaticIndicatorColorAdjustment: true,
             indicatorColor: AppColor.blue,
-            labelStyle: TextStyle(fontWeight: FontWeight.w600,fontSize: 16),
+            labelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
             unselectedLabelColor: AppColor.blue,
-            unselectedLabelStyle:  TextStyle(fontWeight: FontWeight.w900,fontSize: 14),
+            unselectedLabelStyle:
+                TextStyle(fontWeight: FontWeight.w900, fontSize: 14),
             dividerColor: Colors.white,
             tabs: [
               Tab(text: AppStrings.statusPending),
@@ -57,11 +58,25 @@ class TabarScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            OrdersScreen(endPoint: ApiConstants.pendingBookings,isPending: true,),
-            OrdersScreen(endPoint: ApiConstants.submittedBookings,isPending: false,),
-            OrdersScreen(endPoint: ApiConstants.rejectedBookings,isPending: false,),
-            OrdersScreen(endPoint: ApiConstants.inProgressBookings,isPending: false),
-            OrdersScreen(endPoint: ApiConstants.completedBookings,isPending: false),
+            OrdersScreen(
+              endPoint: ApiConstants.pendingBookings,
+              isPending: true,
+            ),
+            OrdersScreen(
+              endPoint: ApiConstants.submittedBookings,
+              isPending: false,
+            ),
+            OrdersScreen(
+              endPoint: ApiConstants.rejectedBookings,
+              isPending: false,
+            ),
+            OrdersScreen(
+              endPoint: ApiConstants.inProgressBookings,
+              isPending: false,
+              isProgress: true,
+            ),
+            OrdersScreen(
+                endPoint: ApiConstants.completedBookings, isPending: false),
           ],
         ),
       ),

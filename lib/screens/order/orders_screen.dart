@@ -1,9 +1,9 @@
-import 'package:driver/api/api_const.dart';
 import 'package:driver/blocs/order/bloc.dart';
 import 'package:driver/blocs/order/state.dart';
 import 'package:driver/screens/home/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../blocs/order/event.dart';
 import '../../utils/const/app_img.dart';
 import 'booking_card.dart';
@@ -11,14 +11,21 @@ import 'booking_card.dart';
 class OrdersScreen extends StatelessWidget {
   final String endPoint;
   final bool isPending;
-  const OrdersScreen({super.key, required this.endPoint, required this.isPending});
+  final bool isProgress;
+  const OrdersScreen(
+      {super.key,
+      required this.endPoint,
+      required this.isPending,
+      this.isProgress = false});
 
   @override
   Widget build(BuildContext context) {
     context.read<OrderBloc>().add(OrderLoadedEvent(endPoint));
     return Scaffold(
-        drawer:CustomDrawer(userName: "Usama", profileImage: AppImages.profile),
-        backgroundColor: Colors.white, body: _body());
+        drawer:
+            CustomDrawer(userName: "Usama", profileImage: AppImages.profile),
+        backgroundColor: Colors.white,
+        body: _body());
   }
 
   Widget _body() {
@@ -33,7 +40,16 @@ class OrdersScreen extends StatelessWidget {
             itemCount: state.bookings.length,
             itemBuilder: (context, index) {
               final item = state.bookings[index];
-              return BookingCard(item: item,isPending: isPending);
+              return BookingCard(
+                item: item,
+                isPending: isPending,
+                isProgress: isProgress,
+              );
+              return BookingCard(
+                item: item,
+                isPending: isPending,
+                isProgress: isProgress,
+              );
             },
           );
         }
@@ -41,5 +57,4 @@ class OrdersScreen extends StatelessWidget {
       },
     );
   }
-
 }
