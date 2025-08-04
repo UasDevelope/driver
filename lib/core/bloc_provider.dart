@@ -15,6 +15,7 @@ import '../blocs/inbox/bloc.dart';
 import '../blocs/location/bloc.dart';
 import '../blocs/splash/splash_bloc.dart';
 import '../blocs/splash/splash_event.dart';
+import '../services/socket_service.dart';
 
 List<BlocProvider> getAppBlocProvider() {
   return [
@@ -29,7 +30,10 @@ List<BlocProvider> getAppBlocProvider() {
       create: (_) =>
           LocationBloc(LocationRepository(), CurrentLocationRepository()),
     ),
-    BlocProvider<HomeBloc>(create: (_) => HomeBloc()),
+    BlocProvider<HomeBloc>(
+        create: (_) => HomeBloc(
+            currentLocationRepository: CurrentLocationRepository(),
+            socketService: SocketService())),
     BlocProvider<ChatUserBloc>(
       create: (_) => ChatUserBloc()..add(ChatUserLoadedEvent()),
     ),

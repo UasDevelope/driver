@@ -23,3 +23,20 @@ class FetchLocationDetailsEvent extends HomeEvent {
 
   const FetchLocationDetailsEvent({required this.latitude, required this.longitude});
 }
+
+class DriverLocationUpdatedEvent extends HomeEvent {
+  final String userId;
+  final double latitude;
+  final double longitude;
+  final String? eta;
+  final String? timestamp;
+  DriverLocationUpdatedEvent({
+    required this.userId,
+    required this.latitude,
+    required this.longitude,
+    this.eta,
+    this.timestamp,
+  });
+  @override
+  List<Object> get props => [userId, latitude, longitude, eta ?? '', timestamp ?? ''];
+}

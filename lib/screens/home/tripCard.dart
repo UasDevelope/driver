@@ -2,16 +2,15 @@ import 'package:driver/blocs/home/bloc.dart';
 import 'package:driver/blocs/home/state.dart';
 import 'package:driver/blocs/location/state.dart';
 import 'package:driver/models/order.dart';
-import 'package:driver/screens/proposal/proposal_screen.dart';
 import 'package:driver/utils/const/app_color.dart';
 import 'package:driver/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dash/flutter_dash.dart';
-import 'package:geocoding/geocoding.dart';
 
 import '../../blocs/home/event.dart';
 import '../../widgets/custom_button.dart';
+import '../chat/inbox.dart';
 
 class TripCard extends StatelessWidget {
   final OrdersModel data;
@@ -21,11 +20,11 @@ class TripCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<HomeBloc>().add(
-      FetchLocationDetailsEvent(
-        latitude: data.latitude!,
-        longitude: data.longitude!,
-      ),
-    );
+          FetchLocationDetailsEvent(
+            latitude: data.latitude!,
+            longitude: data.longitude!,
+          ),
+        );
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
@@ -117,10 +116,8 @@ class TripCard extends StatelessWidget {
                 // Address texts
                 Expanded(
                   child: BlocBuilder<HomeBloc, HomeState>(
-                    buildWhen:
-                        (previous, current) =>
-                            current is LocationLoading ||
-                            current is LocationLoaded,
+                    buildWhen: (previous, current) =>
+                        current is LocationLoading || current is LocationLoaded,
                     builder: (context, state) {
                       if (state is LocationLoading) {
                         return Center(
@@ -135,8 +132,7 @@ class TripCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AppText(
-                              text:
-                                  "${state.country} ${state.city}" ??
+                              text: "${state.country} ${state.city}" ??
                                   "Start Address",
                               fontWeight: FontWeight.bold,
                             ),
@@ -201,10 +197,9 @@ class TripCard extends StatelessWidget {
                     radius: 22,
                     backgroundColor: AppColor.appColor,
                     child: AppText(
-                      text:
-                          (data.customerName?.isNotEmpty ?? false)
-                              ? data.customerName![0].toUpperCase()
-                              : 'U',
+                      text: (data.customerName?.isNotEmpty ?? false)
+                          ? data.customerName![0].toUpperCase()
+                          : 'U',
                       fontWeight: FontWeight.w800,
                       fontSize: 18,
                       color: AppColor.white,
@@ -241,7 +236,25 @@ class TripCard extends StatelessWidget {
                 ],
               ),
             ),
-            // SizedBox(height: 10),
+            SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              child: AppButton(
+                backgroundColor: AppColor.blue,
+                width: 200,
+                text: "Chat",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChatInbox(
+                          bookingId:
+                              data.bookingId!), // Pass bookingId if needed
+                    ),
+                  );
+                },
+              ),
+            ),
             // SizedBox(
             //   width: double.infinity,
             //   child: AppButton(

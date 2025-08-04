@@ -1,16 +1,22 @@
 # driver
 
-A new Flutter project.
+A Flutter app for drivers with the following features:
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Authentication (login, signup, OTP, password reset)
+- Home dashboard
+- Order management (view, details, booking)
+- Chat and inbox messaging
+- Recent orders list
+- Earnings and statistics
+- Location features
+- Notifications
+- Booking proposals
+- Reviews and ratings
+- Profile and settings
+- Help and support
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+For setup and development, see the official [Flutter documentation](https://docs.flutter.dev/).

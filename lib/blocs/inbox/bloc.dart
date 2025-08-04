@@ -109,6 +109,8 @@ class ChatInboxBloc extends Bloc<ChatInboxEvent, ChatInboxState> {
     await _socketService.initSocket();
     await _socketService
         .ensureConnectedAndEmit('joinRoom', {'bookingId': event.bookingId});
+    await _socketService
+        .ensureConnectedAndEmit('trackBooking', {'bookingId': event.bookingId});
 
     // Listen for chat messages
     await _socketService.on('chatMessage', (data) {
@@ -116,6 +118,12 @@ class ChatInboxBloc extends Bloc<ChatInboxEvent, ChatInboxState> {
 
       // Dispatch event instead of directly emitting state
       add(ChatMessageReceivedEvent(data: data));
+    });
+    await _socketService.on('locationUpdate', (data) {
+      log("Socket data is $data");
+    });
+    await _socketService.on('locationRecieve', (data) {
+      log("Socket data is $data");
     });
 
     // Listen for errors
