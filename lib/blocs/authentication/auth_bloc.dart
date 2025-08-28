@@ -28,14 +28,18 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
       log("Response here: $response");
       final token = response["token"];
       final message = response["message"] ?? "Signup successful";
+      
       if (token != null && token is String && token.isNotEmpty) {
         await LocalStorage.storeString(LocalStorage.AcessToken, token);
         final storedToken = await LocalStorage.getString(LocalStorage.AcessToken);
         log("Token stored: $storedToken");
+        emit(AuthSuccessState(message: message));
       } else {
         log("Token missing in response: $response");
+        // If no token is present, treat as error
+        final errorMessage = response["message"] ?? "Signup failed. Please try again.";
+        emit(AuthErrorState(message: errorMessage));
       }
-      emit(AuthSuccessState(message: message));
 
     } on BadRequestException catch (e) {
       log("BadRequestException: ${e.message}");

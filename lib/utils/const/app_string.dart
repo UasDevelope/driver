@@ -53,10 +53,15 @@ class AppStrings {
   static const String alreadyMember = "Already a member?";
   static const String loginHere = "Log In";
 
-  static const String enableLocationTitle = "Enable location";
+  static const String enableLocationTitle = "Enable Location Services";
   static const String enableLocationSubtitle =
-      "To enable location, show we will know your location.";
-  static const String enableButton = "Enable";
+      "We need access to your location to provide you with the best service. This helps us find nearby bookings and improve your experience.";
+  static const String locationPermissionMessage = 
+      "Please allow location access in your device settings to continue. This is required for booking services and navigation.";
+  static const String locationSuccessMessage = 
+      "Location access granted! You can now receive nearby booking requests and navigate efficiently.";
+  static const String nextButton = "Next";
+  static const String continueButton = "Continue";
   static const String welcomeMessage = "👋 Welcome back, {name}!";
   static const String statusNew = "New";
   static const String statusPending = "Pending";

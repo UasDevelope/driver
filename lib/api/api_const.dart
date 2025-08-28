@@ -1,24 +1,51 @@
 import 'package:equatable/equatable.dart';
 
 abstract class ApiConstants extends Equatable {
-  static get BASEURL => "https://training-syste-be.vercel.app/api";
-  static get SocketUrl => "http://54.198.124.181:5000/";
-  static get register => '$BASEURL/auth/register';
-  static get login => "$BASEURL/auth/login";
-  static get updateLocation => "$BASEURL/users/location";
-  static get makeBooking => "$BASEURL/bookings";
-  static get feedback => "$BASEURL/feedback";
-  static get submitProposal => "$BASEURL/bookings/proposals";
-  static get fetchBooking => "$BASEURL/Bookings";
-  static get pendingBookings => "$BASEURL/bookings/pending";
-  static get submittedBookings => "$BASEURL/bookings/submitted";
-  static get rejectedBookings => "$BASEURL/bookings/rejected";
-  static get getProfile => "$BASEURL/users/profile";
-  static get inProgressBookings => "$BASEURL//bookings/inprogress";
-  static get completedBookings => "$BASEURL//bookings/completed";
-  static get fetchEarnings => "$BASEURL/service-providers/earnings";
-  static get fetchRecentOrders =>
-      "$BASEURL/service-providers/completed-bookings";
-  static get getHistory => "$BASEURL/users/transaction-history";
-  static get getChatHistory => "$BASEURL/chat";
+  // Primary server (currently down)
+  static get primaryBaseUrl => "http://54.198.124.181:5000/api";
+
+  // Alternative server (Vercel deployment)
+  static get alternativeBaseUrl => "https://training-syste-be.vercel.app/api";
+
+  // Current active server (will be set dynamically)
+  static String _currentBaseUrl = primaryBaseUrl;
+
+  static String get baseUrl => _currentBaseUrl;
+
+  // Method to switch to alternative server
+  static void switchToAlternativeServer() {
+    _currentBaseUrl = alternativeBaseUrl;
+  }
+
+  // Method to switch back to primary server
+  static void switchToPrimaryServer() {
+    _currentBaseUrl = primaryBaseUrl;
+  }
+
+  // API endpoints using dynamic base URL
+  static String get register => '$baseUrl/auth/register';
+  static String get login => "$baseUrl/auth/login";
+  static String get updateLocation => "$baseUrl/users/location";
+  static String get makeBooking => "$baseUrl/bookings";
+  static String get feedback => "$baseUrl/feedback";
+  static String get submitProposal => "$baseUrl/bookings/proposals";
+  static String get fetchBooking => "$baseUrl/Bookings";
+  static String get pendingBookings => "$baseUrl/bookings/pending";
+  static String get submittedBookings => "$baseUrl/bookings/submitted";
+  static String get rejectedBookings => "$baseUrl/bookings/rejected";
+  static String get getProfile => "$baseUrl/users/profile";
+  static String get inProgressBookings => "$baseUrl/bookings/inprogress";
+  static String get completedBookings => "$baseUrl/bookings/completed";
+  static String get fetchEarnings => "$baseUrl/service-providers/earnings";
+  static String get fetchRecentOrders =>
+      "$baseUrl/service-providers/completed-bookings";
+  static String get getHistory => "$baseUrl/users/transaction-history";
+  static String get getChatHistory => "$baseUrl/chat";
+  static String get sendChatMessage => "$baseUrl/chat/message";
+  static String get getChatMessages => "$baseUrl/chat/messages";
+
+  // Socket URLs
+  static String get socketUrl => _currentBaseUrl.replaceAll('/api', '');
+  static String get socketUrlAlternative =>
+      "https://training-syste-be.vercel.app";
 }

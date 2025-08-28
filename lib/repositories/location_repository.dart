@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import '../api/api_const.dart';
 import '../api/base_api_client.dart';
+import '../utils/network_utils.dart';
 
 class LocationRepository {
   final BaseApiClient _apiClient = GetIt.instance<BaseApiClient>();
@@ -10,17 +11,22 @@ class LocationRepository {
     required double longitude,
     String? locationName,
   }) async {
-    final body = {
-      "latitude": latitude,
-      "longitude": longitude,
-      if (locationName != null) "locationName": locationName,
-    };
+    try {
+      final body = {
+        "latitude": latitude,
+        "longitude": longitude,
+        if (locationName != null) "locationName": locationName,
+      };
 
-    final response = await _apiClient.put(
-      ApiConstants.updateLocation,
-      body,
-    );
+      final response = await _apiClient.put(
+        ApiConstants.updateLocation,
+        body,
+      );
 
-    return response;
+      return response;
+    } catch (e) {
+      final errorMessage = NetworkUtils.getErrorMessage(e);
+      throw Exception(errorMessage);
+    }
   }
 }

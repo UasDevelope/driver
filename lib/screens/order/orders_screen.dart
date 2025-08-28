@@ -43,13 +43,8 @@ class OrdersScreen extends StatelessWidget {
               return BookingCard(
                 item: item,
                 isPending: isPending,
-                isProgress: isProgress,
               );
-              return BookingCard(
-                item: item,
-                isPending: isPending,
-                isProgress: isProgress,
-              );
+
             },
           );
         }

@@ -1,6 +1,7 @@
 import 'package:driver/blocs/home/bloc.dart';
 import 'package:driver/blocs/home/state.dart';
 import 'package:driver/blocs/location/state.dart';
+import 'package:driver/core/app_routes.dart';
 import 'package:driver/models/order.dart';
 import 'package:driver/utils/const/app_color.dart';
 import 'package:driver/widgets/app_text.dart';
@@ -10,7 +11,6 @@ import 'package:flutter_dash/flutter_dash.dart';
 
 import '../../blocs/home/event.dart';
 import '../../widgets/custom_button.dart';
-import '../chat/inbox.dart';
 
 class TripCard extends StatelessWidget {
   final OrdersModel data;
@@ -244,13 +244,13 @@ class TripCard extends StatelessWidget {
                 width: 200,
                 text: "Chat",
                 onPressed: () {
-                  Navigator.push(
+                  Navigator.pushNamed(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatInbox(
-                          bookingId:
-                              data.bookingId!), // Pass bookingId if needed
-                    ),
+                    AppRoutes.chatInbox,
+                    arguments: {
+                      'bookingId': data.bookingId,
+                      'customerName': data.customerName,
+                    },
                   );
                 },
               ),

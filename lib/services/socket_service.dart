@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
-
-import 'package:driver/services/local.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+import 'package:driver/services/local.dart';
 import '../api/api_const.dart';
 
 class SocketService {
@@ -18,7 +17,7 @@ class SocketService {
       log('🔌 Connecting to socket with token: $token');
 
       _socket = IO.io(
-        ApiConstants.SocketUrl,
+        ApiConstants.socketUrl,
         <String, dynamic>{
           'transports': ['websocket'],
           'autoConnect': false,

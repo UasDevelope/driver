@@ -10,6 +10,7 @@ class OrdersModel {
   final String? locationName;
   final double? latitude;
   final double? longitude;
+  final String? status;
 
   OrdersModel({
     this.customerName,
@@ -23,10 +24,14 @@ class OrdersModel {
     this.locationName,
     this.latitude,
     this.longitude,
+    this.status,
   });
 
   factory OrdersModel.fromJson(Map<String, dynamic> json) {
     final coordinates = json['location']?['coordinates'];
+    // Get status from myProposal.status if available, otherwise from direct status field
+    final String? status = json['myProposal']?['status'] ?? json['status'];
+    
     return OrdersModel(
       customerName: json['customerName'],
       bookingId: json['bookingId'],
@@ -39,6 +44,7 @@ class OrdersModel {
       locationName: json['locationName'],
       longitude: (coordinates != null && coordinates.length > 0) ? coordinates[0].toDouble() : null,
       latitude: (coordinates != null && coordinates.length > 1) ? coordinates[1].toDouble() : null,
+      status: status,
     );
   }
 }

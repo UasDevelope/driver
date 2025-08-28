@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:driver/blocs/inbox/state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -33,7 +32,7 @@ class ChatInboxBloc extends Bloc<ChatInboxEvent, ChatInboxState> {
       _chatList = [];
       final BaseApiClient apiClient = GetIt.instance<BaseApiClient>();
       var response = await apiClient
-          .get("${ApiConstants.getChatHistory}/${event.bookingId}");
+          .get("${ApiConstants.baseUrl}/chat/${event.bookingId}");
       log("Response for the chat is $response");
 
       if (response != null && response['messages'] != null) {

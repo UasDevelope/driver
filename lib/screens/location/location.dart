@@ -16,6 +16,7 @@ class LocationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(backgroundColor: Colors.white, body: _body(context));
   }
+  
   Widget _body(BuildContext context) {
     return BlocListener<LocationBloc, LocationState>(
       listener: (context, state) {
@@ -29,44 +30,70 @@ class LocationScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           String? locationText;
+          String? buttonText;
+          
           if (state is LocationLoadedState) {
-            locationText = state.location;
+            locationText = AppStrings.locationSuccessMessage;
+            buttonText = AppStrings.continueButton;
           } else if (state is LocationErrorState) {
             locationText = "Error: ${state.message}";
+            buttonText = AppStrings.nextButton;
           } else if (state is LocationPermissionDenied) {
-            locationText = "Permission Denied";
+            locationText = AppStrings.locationPermissionMessage;
+            buttonText = AppStrings.nextButton;
           } else {
             locationText = AppStrings.enableLocationSubtitle;
+            buttonText = AppStrings.nextButton;
           }
+          
           return Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Image.asset(AppImages.location, height: 150, width: 150),
-                  SizedBox(height: 32),
+                  // Location icon with better styling
+                  Container(
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: AppColor.appColor.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Image.asset(
+                      AppImages.location, 
+                      height: 120, 
+                      width: 120,
+                    ),
+                  ),
+                  SizedBox(height: 40),
                   AppText(
                     text: AppStrings.enableLocationTitle,
-                    fontSize: 24,
+                    fontSize: 26,
                     fontWeight: FontWeight.w700,
                     color: AppColor.black,
+                    textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 12),
+                  SizedBox(height: 20),
                   AppText(
                     text: locationText,
                     textAlign: TextAlign.center,
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: FontWeight.w400,
                     color: AppColor.grey,
                   ),
-                  SizedBox(height: 32),
+                  SizedBox(height: 90),
                   AppButton(
                     backgroundColor: AppColor.appColor,
-                    borderRadius: 10,
-                    text: AppStrings.enableButton,
+                    borderRadius: 12,
+                    text: buttonText,
                     onPressed: () {
-                      context.read<LocationBloc>().add(RequestEnableLocation());
+                      if (state is LocationLoadedState) {
+                        // If location is loaded, navigate to home
+                        Navigator.pushNamed(context, AppRoutes.home);
+                      } else {
+                        // Request location permission
+                        context.read<LocationBloc>().add(RequestEnableLocation());
+                      }
                     },
                   ),
                 ],

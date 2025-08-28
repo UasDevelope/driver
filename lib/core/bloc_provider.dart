@@ -1,3 +1,4 @@
+import 'package:driver/blocs/chat/bloc.dart';
 import 'package:driver/blocs/earning/bloc.dart';
 import 'package:driver/blocs/home/bloc.dart';
 import 'package:driver/blocs/order/bloc.dart';
@@ -5,7 +6,9 @@ import 'package:driver/blocs/profile/profile_bloc.dart';
 import 'package:driver/blocs/propsal/propsal_bloc.dart';
 import 'package:driver/repositories/CurrentLocationRepository.dart';
 import 'package:driver/repositories/auth_repository.dart';
+import 'package:driver/repositories/chat_repository.dart';
 import 'package:driver/repositories/location_repository.dart';
+import 'package:driver/api/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/authentication/auth_bloc.dart';
@@ -38,6 +41,9 @@ List<BlocProvider> getAppBlocProvider() {
       create: (_) => ChatUserBloc()..add(ChatUserLoadedEvent()),
     ),
     BlocProvider<ChatInboxBloc>(create: (_) => ChatInboxBloc()),
+    BlocProvider<ChatBloc>(
+      create: (_) => ChatBloc(chatRepository: sl<ChatRepository>()),
+    ),
     BlocProvider<OrderBloc>(
       create: (_) => OrderBloc(),
     ),

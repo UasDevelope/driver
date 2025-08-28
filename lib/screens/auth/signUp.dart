@@ -53,8 +53,22 @@ class _SignupScreenState extends State<SignupScreen> {
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthLoadingState) {
-            Center(child: CircularProgressIndicator());
+            // Show loading indicator
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            );
           } else {
+            // Hide loading indicator if it's showing
+            if (Navigator.of(context, rootNavigator: true).canPop()) {
+              Navigator.of(context, rootNavigator: true).pop();
+            }
+            
             if (state is AuthErrorState) {
               ToastHelper.showToast(
                 message: state.message,

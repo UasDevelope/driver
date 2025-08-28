@@ -58,9 +58,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => HelpScreen());
       case chatInbox:
         return MaterialPageRoute(
-            builder: (_) => ChatInbox(
-                  bookingId: '',
-                ));
+            builder: (context) => const ChatInbox(),
+            settings: setting);
       case forget:
         return MaterialPageRoute(builder: (_) => ForgetPasswordScreen());
       case message:

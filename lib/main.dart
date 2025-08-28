@@ -3,8 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'api/service_locator.dart';
 import 'core/app_routes.dart';
 import 'core/bloc_provider.dart';
-void main() async{
- setupLocator();
+import 'utils/server_health_checker.dart';
+
+void main() async {
+  setupLocator();
+  
+  // Check server health on app startup
+  WidgetsFlutterBinding.ensureInitialized();
+  await ServerHealthChecker.autoSwitchToBestServer();
+  
   runApp(MyApp());
 }
 class MyApp extends StatelessWidget {
