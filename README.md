@@ -1,9 +1,6 @@
 # driver
 
 A Flutter app for drivers with the following features:
-
-## Features
-
 - Authentication (login, signup, OTP, password reset)
 - Home dashboard
 - Order management (view, details, booking)

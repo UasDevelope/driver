@@ -1,33 +1,33 @@
 class AppStrings {
   static const String welcomeBack = "Welcome Back!";
   static const String welcomeSubtitle =
-      "Lorem ipsum dolor sit amet consectetur. Metus rhoncus elementum sit sed augue.";
+      "Sign in to your account to access your driver dashboard and manage your bookings.";
 
   static const String emailOrPhone = "Email or Phone Number";
-  static const String enterEmail = "Enter your email";
+  static const String enterEmail = "Enter your email address";
   static const String email = "Email Address";
 
   static const String password = "Password";
   static const String enterPassword = "Enter your password";
 
   static const String rememberMe = "Remember me";
-  static const String forgotPassword = "Forget password ?";
+  static const String forgotPassword = "Forgot password?";
 
-  static const String login = "Login";
-  static const String dontHaveAccount = "Don’t have an account?";
+  static const String login = "Sign In";
+  static const String dontHaveAccount = "Don't have an account?";
   static const String signUpHere = "Sign Up here";
 
-  static const String loginSuccessTitle = "Yey! Login Successful";
+  static const String loginSuccessTitle = "Login Successful!";
   static const String loginSuccessMessage =
-      "You will be moved to home screen right now.\nEnjoy the features!";
-  static const String letsExplore = "Let’s Explore";
+      "Welcome back! You will be redirected to your dashboard.\nEnjoy managing your bookings!";
+  static const String letsExplore = "Let's Explore";
   static const String makeAnApp = "Make an App";
 
-  // ✅ Added Sign Up related strings
-  static const String createYourAccount = "Create your account";
+  // ✅ Updated Sign Up related strings
+  static const String createYourAccount = "Create Your Account";
   static const String signupSubtitle =
-      "Lorem ipsum dolor sit amet consectetur. Metus rhoncus elementum sit sed augue.";
-  static const String basicInfo = "Basic Info";
+      "Join our driver community and start earning by providing professional driving services.";
+  static const String basicInfo = "Basic Information";
 
   static const String fullName = "Full Name";
   static const String enterFullName = "Enter your full name";
@@ -36,22 +36,22 @@ class AppStrings {
   static const String enterContactNumber = "Enter your contact number";
 
   static const String confirmPassword = "Confirm Password";
-  static const String enterConfirmPassword = "Enter your password";
+  static const String enterConfirmPassword = "Confirm your password";
 
-  static const String permitAndCertificate = "Permit & Certificate";
+  static const String permitAndCertificate = "License & Certification";
 
   static const String drivingPermit =
-      "Driving Permit Number / Learner Permit Number";
-  static const String enterDrivingPermit = "Enter your Driving Permit Number";
+      "Driving License Number";
+  static const String enterDrivingPermit = "Enter your driving license number";
 
-  static const String certificateNumber = "Certificate Number";
-  static const String enterCertificateNumber = "Enter your Certificate Number";
+  static const String certificateNumber = "Professional Certificate";
+  static const String enterCertificateNumber = "Enter your professional certificate number";
 
-  static const String agreeToTerms = "Agree to Terms and Conditions";
+  static const String agreeToTerms = "I agree to the Terms and Conditions and Privacy Policy";
 
-  static const String signup = "Signup";
-  static const String alreadyMember = "Already a member?";
-  static const String loginHere = "Log In";
+  static const String signup = "Create Account";
+  static const String alreadyMember = "Already have an account?";
+  static const String loginHere = "Sign In";
 
   static const String enableLocationTitle = "Enable Location Services";
   static const String enableLocationSubtitle =
@@ -106,6 +106,6 @@ class AppStrings {
   //Forget screen
   static const String resetPasswordH = "Reset Your Password";
   static const String sendVFCode = "Send Verification Code";
-  static const String resetPasswordB = "Enter your email adress below\nand we’ll send you a link with instructions";
+  static const String resetPasswordB = "Enter your email address below\nand we'll send you a link with instructions";
 
 }

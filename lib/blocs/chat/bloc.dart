@@ -19,6 +19,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   // Prevent duplicate message sending
   String? _lastSentMessage;
   DateTime? _lastSentTime;
+  
+  // Track processed message IDs to prevent duplicates
+  final Set<String> _processedMessageIds = <String>{};
+  final Set<String> _processedDeliveryIds = <String>{};
 
   ChatBloc({required this.chatRepository}) 
       : _socketService = sl<ChatSocketService>(),
@@ -34,6 +38,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     _setupSocketListeners();
   }
 
+  /// Clear processed message IDs when switching bookings
+  void _clearProcessedIds() {
+    _processedMessageIds.clear();
+    _processedDeliveryIds.clear();
+    log("🧹 Cleared processed message IDs for new booking");
+  }
+
   Future<void> _onLoadChatMessages(
     LoadChatMessagesEvent event,
     Emitter<ChatState> emit,
@@ -42,6 +53,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     
     try {
       log("Loading chat messages for booking: ${event.bookingId}");
+      
+      // Clear processed IDs if switching to a different booking
+      if (_currentBookingId != null && _currentBookingId != event.bookingId) {
+        _clearProcessedIds();
+      }
+      
       final messages = await chatRepository.getChatMessages(event.bookingId);
       _messages = messages;
       _currentBookingId = event.bookingId;
@@ -204,7 +221,26 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     Emitter<ChatState> emit,
   ) {
     try {
-      final newMessage = ChatMessage.fromJson(event.messageData);
+      log("🔄 Processing NewMessageReceivedEvent: ${event.messageData}");
+      
+      // Handle the specific data format from your logs
+      final data = event.messageData;
+      
+      // Create ChatMessage from socket data
+      final newMessage = ChatMessage(
+        id: data['_id']?.toString() ?? data['id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        senderId: data['userId']?.toString() ?? data['senderId']?.toString() ?? 'unknown',
+        senderName: data['senderName']?.toString() ?? 'Unknown User',
+        senderRole: data['senderRole']?.toString() ?? 'user',
+        message: data['message']?.toString() ?? '',
+        timestamp: data['timestamp'] != null 
+            ? DateTime.parse(data['timestamp'].toString())
+            : DateTime.now(),
+        status: data['status']?.toString() ?? 'sent',
+        bookingId: data['bookingId']?.toString() ?? _currentBookingId ?? '',
+      );
+      
+      log("📝 Created ChatMessage: ${newMessage.message} (ID: ${newMessage.id})");
       
       // Only add if it's for current booking and not already in the list
       if (newMessage.bookingId == _currentBookingId) {
@@ -218,7 +254,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         
         if (!existingMessage) {
           _messages.add(newMessage);
-          log("New message received: ${newMessage.message}");
+          log("✅ New message added to list: ${newMessage.message}");
+          log("📊 Total messages: ${_messages.length}");
           
           emit(ChatMessagesLoadedState(
             messages: _messages,
@@ -226,11 +263,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             isConnected: true,
           ));
         } else {
-          log("Duplicate message ignored: ${newMessage.message}");
+          log("🚫 Duplicate message ignored: ${newMessage.message}");
         }
+      } else {
+        log("⚠️ Message for different booking (${newMessage.bookingId} vs $_currentBookingId)");
       }
     } catch (e) {
-      log("Error processing new message: $e");
+      log("❌ Error processing new message: $e");
+      log("📋 Raw data: ${event.messageData}");
     }
   }
 
@@ -328,9 +368,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       // Only process messages that are not from the current user
       // to avoid adding our own messages multiple times
       if (data['type'] == null) {
+        // This is a regular chat message
+        final messageId = data['_id']?.toString() ?? data['id']?.toString();
+        
+        // Check if we've already processed this message
+        if (messageId != null && _processedMessageIds.contains(messageId)) {
+          log("🔄 Duplicate message ignored (ID: $messageId): ${data['message']}");
+          return;
+        }
+        
         // Check if this is our own message (by senderId or message content)
         final isOwnMessage = data['senderId'] == 'current_user' || 
                             data['senderId'] == 'serviceProvider' ||
+                            data['userId'] == 'current_user' ||
                             (data['message'] != null && _messages.any((msg) => 
                               msg.message == data['message'] && 
                               msg.timestamp.difference(DateTime.now()).abs().inSeconds < 10
@@ -338,26 +388,57 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         
         if (!isOwnMessage) {
           // Regular chat message from other users
+          log("📨 Processing new message from socket: ${data['message']}");
           add(NewMessageReceivedEvent(messageData: data));
+          
+          // Mark as processed
+          if (messageId != null) {
+            _processedMessageIds.add(messageId);
+          }
         } else {
-          log("Ignoring own message from socket: ${data['message']}");
+          log("🚫 Ignoring own message from socket: ${data['message']}");
         }
       } else if (data['type'] != null) {
         // Handle different message types
         switch (data['type']) {
           case 'delivered':
-            _updateMessageStatus(data['data']['messageId'], 'delivered');
+            final deliveryData = data['data'];
+            final messageId = deliveryData['messageId']?.toString();
+            
+            // Check if we've already processed this delivery
+            if (messageId != null && _processedDeliveryIds.contains(messageId)) {
+              log("🔄 Duplicate delivery ignored (ID: $messageId)");
+              return;
+            }
+            
+            log("📬 Processing message delivery: $messageId");
+            _updateMessageStatus(messageId, 'delivered');
+            
+            // Mark as processed
+            if (messageId != null) {
+              _processedDeliveryIds.add(messageId);
+            }
             break;
+            
           case 'read':
-            _updateMessageStatus(data['data']['messageIds'], 'read');
+            final readData = data['data'];
+            final messageIds = readData['messageIds'];
+            log("👁️ Processing message read: $messageIds");
+            _updateMessageStatus(messageIds, 'read');
             break;
+            
           case 'sent':
-            log("Message sent confirmation: ${data['data']}");
+            log("📤 Message sent confirmation: ${data['data']}");
             break;
+            
           case 'roomJoined':
-            log("Room joined: ${data['data']}");
+            log("🚪 Room joined: ${data['data']}");
             // Don't emit state changes from socket listeners
             // The connection method will handle state transitions
+            break;
+            
+          default:
+            log("❓ Unknown message type: ${data['type']}");
             break;
         }
       }

@@ -1,7 +1,9 @@
 import 'package:driver/blocs/profile/profile_state.dart';
 import 'package:driver/core/app_routes.dart';
+import 'package:driver/repositories/auth_repository.dart';
 import 'package:driver/utils/const/app_color.dart';
 import 'package:driver/utils/const/app_img.dart';
+import 'package:driver/utils/const/toast_helper.dart';
 import 'package:driver/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +11,7 @@ import '../../blocs/profile/profile_bloc.dart';
 import '../../blocs/profile/profile_event.dart';
 import '../../services/local.dart';
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
   final String userName;
   final String profileImage;
 
@@ -18,6 +20,14 @@ class CustomDrawer extends StatelessWidget {
     required this.userName,
     required this.profileImage,
   });
+
+  @override
+  State<CustomDrawer> createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
+  final AuthRepository _authRepository = AuthRepository();
+  bool _isDeleting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -95,16 +105,47 @@ class CustomDrawer extends StatelessWidget {
           // _buildDrawerItem(AppImages.notification, "Notifications", () {
           //   Navigator.pushNamed(context, AppRoutes.notification);
           // }),
-          _buildDrawerItem(AppImages.chat, "Messages", () {
-            Navigator.pushNamed(context, AppRoutes.message);
+          // _buildDrawerItem(AppImages.chat, "Messages", () {
+          //   Navigator.pushNamed(context, AppRoutes.message);
+          // }),
+          // _buildDrawerItem(AppImages.setting, "Account Settings", () {
+          //   Navigator.pushNamed(context, AppRoutes.settings);
+          // }),
+          _buildDrawerItem(AppImages.reviewimg, "Reviews & Ratings", () {
+            Navigator.pushNamed(context, AppRoutes.review);
           }),
-          _buildDrawerItem(AppImages.setting, "Account Settings", () {
-            Navigator.pushNamed(context, AppRoutes.settings);
-          }),
-          _buildDrawerItem(AppImages.help, "Help & feedback", () {
-            Navigator.pushNamed(context, AppRoutes.help);
-          }),
+
           const Spacer(),
+          ListTile(
+            leading: Icon(Icons.delete_forever, color: AppColor.red),
+            title: _isDeleting
+                ? Row(
+                    children: [
+                      SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(AppColor.red),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      AppText(
+                        text: "Deleting...",
+                        color: AppColor.red,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16,
+                      ),
+                    ],
+                  )
+                : AppText(
+                    text: "Delete Account",
+                    color: AppColor.red,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                  ),
+            onTap: _isDeleting ? null : _showDeleteAccountDialog,
+          ),
           ListTile(
             leading: Icon(Icons.logout, color: AppColor.red),
             title: AppText(
@@ -140,5 +181,93 @@ class CustomDrawer extends StatelessWidget {
       ),
       onTap: onTap,
     );
+  }
+
+  void _showDeleteAccountDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Icon(Icons.warning, color: AppColor.red, size: 28),
+              const SizedBox(width: 8),
+              AppText(
+                text: "Delete Account",
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ],
+          ),
+          content: AppText(
+            text: "Are you sure you want to delete your account? This action cannot be undone and will permanently remove all your data.",
+            fontSize: 14,
+            color: AppColor.grey,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: AppText(
+                text: "Cancel",
+                color: AppColor.grey,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteAccount();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColor.red,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: AppText(
+                text: "Delete",
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteAccount() async {
+    setState(() {
+      _isDeleting = true;
+    });
+
+    try {
+      await _authRepository.deleteAccount();
+      
+      ToastHelper.showToast(message: "Account deleted successfully");
+      
+      // Navigate to login screen and clear all routes
+      if (mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.login,
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isDeleting = false;
+        });
+        
+        ToastHelper.showToast(message: e.toString());
+      }
+    }
   }
 }

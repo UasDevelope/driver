@@ -29,6 +29,7 @@ class AppRoutes {
   static const notification = "/notification";
   static const message = '/message';
   static const String chatInbox = "/inbox";
+  static const String review = "/review";
 
   static const settings = "/setting";
   static const help = '/help';
@@ -56,6 +57,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => ReviewScreen());
       case help:
         return MaterialPageRoute(builder: (_) => HelpScreen());
+      case review:
+        return MaterialPageRoute(builder: (_) => ReviewScreen());
       case chatInbox:
         return MaterialPageRoute(
             builder: (context) => const ChatInbox(),

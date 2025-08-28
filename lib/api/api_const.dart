@@ -3,25 +3,19 @@ import 'package:equatable/equatable.dart';
 abstract class ApiConstants extends Equatable {
   // Primary server (currently down)
   static get primaryBaseUrl => "http://54.198.124.181:5000/api";
-
   // Alternative server (Vercel deployment)
   static get alternativeBaseUrl => "https://training-syste-be.vercel.app/api";
-
   // Current active server (will be set dynamically)
   static String _currentBaseUrl = primaryBaseUrl;
-
   static String get baseUrl => _currentBaseUrl;
-
   // Method to switch to alternative server
   static void switchToAlternativeServer() {
     _currentBaseUrl = alternativeBaseUrl;
   }
-
   // Method to switch back to primary server
   static void switchToPrimaryServer() {
     _currentBaseUrl = primaryBaseUrl;
   }
-
   // API endpoints using dynamic base URL
   static String get register => '$baseUrl/auth/register';
   static String get login => "$baseUrl/auth/login";
@@ -43,6 +37,7 @@ abstract class ApiConstants extends Equatable {
   static String get getChatHistory => "$baseUrl/chat";
   static String get sendChatMessage => "$baseUrl/chat/message";
   static String get getChatMessages => "$baseUrl/chat/messages";
+  static String get deleteAccount => "$baseUrl/auth/delete";
 
   // Socket URLs
   static String get socketUrl => _currentBaseUrl.replaceAll('/api', '');

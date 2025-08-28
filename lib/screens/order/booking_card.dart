@@ -83,58 +83,60 @@ class BookingCard extends StatelessWidget {
                           ),
                           Row(
                             children: [
-                              // Chat button - always visible for testing
-                              GestureDetector(
-                                onTap: () {
-                                  print("Chat button tapped!");
-                                  print("Booking ID: ${item.bookingId}");
-                                  print("Customer Name: ${item.customerName}");
-                                  print("Status: ${item.status}");
-                                  
-                                  print("About to navigate with arguments:");
-                                  print("bookingId: ${item.bookingId}");
-                                  print("customerName: ${item.customerName}");
-                                  
-                                  // Try direct navigation instead of named route
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const ChatInbox(),
-                                      settings: RouteSettings(
-                                        name: AppRoutes.chatInbox,
-                                        arguments: <String, dynamic>{
-                                          'bookingId': item.bookingId,
-                                          'customerName': item.customerName,
-                                        },
+                              // Chat button - only visible for in-progress jobs
+                              if (item.status?.toLowerCase() == 'inprogress') ...[
+                                GestureDetector(
+                                  onTap: () {
+                                    print("Chat button tapped!");
+                                    print("Booking ID: ${item.bookingId}");
+                                    print("Customer Name: ${item.customerName}");
+                                    print("Status: ${item.status}");
+                                    
+                                    print("About to navigate with arguments:");
+                                    print("bookingId: ${item.bookingId}");
+                                    print("customerName: ${item.customerName}");
+                                    
+                                    // Try direct navigation instead of named route
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const ChatInbox(),
+                                        settings: RouteSettings(
+                                          name: AppRoutes.chatInbox,
+                                          arguments: <String, dynamic>{
+                                            'bookingId': item.bookingId,
+                                            'customerName': item.customerName,
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [Colors.green, Colors.green.shade600],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.green.withOpacity(0.3),
-                                        blurRadius: 4,
-                                        offset: Offset(0, 2),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [Colors.green, Colors.green.shade600],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
                                       ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    Icons.chat_bubble_outline,
-                                    color: Colors.white,
-                                    size: 20,
+                                      borderRadius: BorderRadius.circular(8),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.green.withOpacity(0.3),
+                                          blurRadius: 4,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      Icons.chat_bubble_outline,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(width: 8),
+                                SizedBox(width: 8),
+                              ],
                               AppText(
                                 text: "No of Hours: ${item.hours ?? "-"}",
                                 fontSize: 12,

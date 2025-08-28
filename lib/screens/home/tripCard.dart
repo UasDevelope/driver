@@ -237,24 +237,27 @@ class TripCard extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: AppButton(
-                backgroundColor: AppColor.blue,
-                width: 200,
-                text: "Chat",
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    AppRoutes.chatInbox,
-                    arguments: {
-                      'bookingId': data.bookingId,
-                      'customerName': data.customerName,
-                    },
-                  );
-                },
+            // Chat button - only visible for in-progress jobs
+            if (data.status?.toLowerCase() == 'inprogress') ...[
+              SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  backgroundColor: AppColor.blue,
+                  width: 200,
+                  text: "Chat",
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.chatInbox,
+                      arguments: {
+                        'bookingId': data.bookingId,
+                        'customerName': data.customerName,
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
+            ],
             // SizedBox(
             //   width: double.infinity,
             //   child: AppButton(

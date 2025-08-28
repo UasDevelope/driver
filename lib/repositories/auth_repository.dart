@@ -62,4 +62,19 @@ class AuthRepository {
       throw Exception(errorMessage);
     }
   }
+
+  Future<Map<String, dynamic>> deleteAccount() async {
+    try {
+      final response = await apiClient.delete(ApiConstants.deleteAccount, {}, auth: true);
+      
+      // Clear local storage after successful account deletion
+      await LocalStorage.storeString(LocalStorage.AcessToken, '');
+      
+      return response;
+    } catch (e) {
+      // Use NetworkUtils for consistent error handling
+      final errorMessage = NetworkUtils.getErrorMessage(e);
+      throw Exception(errorMessage);
+    }
+  }
 }
