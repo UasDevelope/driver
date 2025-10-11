@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     initialCameraPosition: _defaultPosition,
                     zoomControlsEnabled:
                         state.ordersModel.isEmpty ? true : false,
-                    myLocationEnabled: true,
+                    myLocationEnabled: false, // Disable automatic location request
                     indoorViewEnabled: true,
                     markers: state.marker,
                     onMapCreated: (controller) {

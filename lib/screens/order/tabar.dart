@@ -1,10 +1,14 @@
+import 'package:driver/blocs/profile/profile_bloc.dart';
+import 'package:driver/blocs/profile/profile_event.dart';
+import 'package:driver/blocs/profile/profile_state.dart';
 import 'package:driver/screens/home/drawer.dart';
 import 'package:driver/utils/const/app_img.dart';
+import 'package:driver/utils/const/app_string.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../api/api_const.dart';
 import '../../utils/const/app_color.dart';
-import '../../utils/const/app_string.dart';
 import 'orders_screen.dart';
 
 class TabarScreen extends StatelessWidget {
@@ -12,6 +16,8 @@ class TabarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<ProfileBloc>().add(GetProfileEvent());
+    
     return DefaultTabController(
       length: 5,
       child: Scaffold(
@@ -36,7 +42,15 @@ class TabarScreen extends StatelessWidget {
               ),
             ),
           ),
-          title: Text("👋 Welcome back, Frank!"),
+          title: BlocBuilder<ProfileBloc, ProfileState>(
+            builder: (context, state) {
+              if (state is ProfileLoaded) {
+                return Text("👋 Welcome back, ${state.profile.user.fullName}!");
+              } else {
+                return Text("👋 Welcome back!");
+              }
+            },
+          ),
           bottom: TabBar(
             isScrollable: true,
             labelColor: AppColor.appColor,

@@ -65,11 +65,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   void fetchOrders(HomeLoadedEvent event, Emitter<HomeState> emit) async {
     emit(HomeLoadingState());
     try {
-      // 1. Get current location
-      final (double driverLat, double driverLong, String driverLocation) =
-          await currentLocationRepository.getCurrentLocation();
-      final LatLng driverLatLng = LatLng(driverLat, driverLong);
+      // 1. Get current location - only if we have permission
+      LatLng driverLatLng;
+      String driverLocation;
+      
+      try {
+        final (double driverLat, double driverLong, String driverLoc) =
+            await currentLocationRepository.getCurrentLocation();
+        driverLatLng = LatLng(driverLat, driverLong);
+        driverLocation = driverLoc;
+      } catch (e) {
+        // If location permission not granted, use default location
+        log("Location permission not granted, using default location: $e");
+        driverLatLng = LatLng(37.3346, -121.8910); // Default location
+        driverLocation = "Default Location";
+      }
+      
       _driverLatLng = driverLatLng;
+      
       // 2. Fetch orders
       List<OrdersModel> orders =
           await ordersRepo.getBookings(ApiConstants.inProgressBookings);

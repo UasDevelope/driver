@@ -27,9 +27,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs access to your location even when the app is in the background.</string>
+	<string>This app needs access to your location even when the app is in the background to provide real-time tracking and route optimization for your driving services. We use this data to show your current position on the map, find nearby booking opportunities, and provide accurate navigation assistance during active trips.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to your location to show it on the map.</string>
+	<string>This app needs access to your location to show your position on the map, find nearby bookings, and provide navigation assistance. We use this data to display your current location, calculate optimal routes to customer pickup points, and help you navigate efficiently during driving services.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -42,20 +42,25 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>This app requires access to your location to enable real-time tracking and route navigation for drivers.</string>
+    <string>This app requires access to your location to enable real-time tracking, route navigation, and finding nearby booking opportunities for drivers. We use this data to show your current position on the map, calculate optimal routes to customer locations, provide turn-by-turn navigation during trips, and help you find nearby booking requests in your area.</string>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
     <key>UIDeviceFamily</key>
     <array>
         <integer>1</integer>
     </array>
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+        <string>armv7</string>
+        <string>gps</string>
+        <string>location-services</string>
+    </array>
+    <key>UIStatusBarStyle</key>
+    <string>UIStatusBarStyleDefault</string>
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <false/>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
 </dict>
 </plist>
